@@ -1,7 +1,7 @@
 # ==========================================
-# STAGE 1: Build com Maven e Java 21 JDK
+# STAGE 1: Build com Maven e Java 21 JDK (Glibc Standard)
 # ==========================================
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /build
 
 # Copia pom.xml e código-fonte completos
