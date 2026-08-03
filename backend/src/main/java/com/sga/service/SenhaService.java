@@ -41,7 +41,7 @@ public class SenhaService {
             aguardando = senhaRepository.findByStatusOrderByDataCriacaoAsc(StatusSenha.AGUARDANDO)
                     .stream().filter(s -> s.getTipo() == tipoFila).toList();
         } else {
-            aguardando = senhaRepository.findProximaSenhaFilaPrioritaria();
+            aguardando = senhaRepository.findProximaSenhaFilaPrioritaria(StatusSenha.AGUARDANDO, TipoAtendimento.RECEPCAO_PREFERENCIAL);
         }
 
         if (aguardando.isEmpty()) {

@@ -4,13 +4,12 @@
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /build
 
-# Copia dependências primeiro para cache do Docker
+# Copia pom.xml e código-fonte completos
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copia código fonte e gera o pacote jar
 COPY src ./src
-RUN mvn package -DskipTests -B
+
+# Compila o projeto sem rodar os testes durante a imagem do Docker
+RUN mvn clean package -DskipTests -B
 
 # ==========================================
 # STAGE 2: Runtime Seguro (Hardened Container)
