@@ -20,7 +20,7 @@ public interface SenhaRepository extends JpaRepository<Senha, Long> {
 
     List<Senha> findByStatusOrderByDataCriacaoAsc(StatusSenha status);
 
-    @Query("SELECT s FROM Senha s WHERE s.status = 'AGUARDANDO' ORDER BY CASE WHEN s.tipo = 'PREFERENCIAL' THEN 1 ELSE 2 END, s.dataCriacao ASC")
+    @Query("SELECT s FROM Senha s WHERE s.status = 'AGUARDANDO' ORDER BY CASE WHEN s.tipo = 'RECEPCAO_PREFERENCIAL' THEN 1 ELSE 2 END, s.dataCriacao ASC")
     List<Senha> findProximaSenhaFilaPrioritaria();
 
     long countByStatus(StatusSenha status);

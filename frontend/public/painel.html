@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGA - Painel TV Chamada de Senhas</title>
+    <title>SGA - Painel TV Colégio La Salle</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -131,8 +131,8 @@
         }
 
         .history-item.pref { border-left-color: #f59e0b; }
-        .history-item.nor { border-left-color: #38bdf8; }
-        .history-item.exa { border-left-color: #10b981; }
+        .history-item.rec { border-left-color: #38bdf8; }
+        .history-item.sto { border-left-color: #ec4899; }
 
         .history-code { font-size: 1.5rem; font-weight: 700; }
         .history-guiche { font-size: 1.2rem; color: #94a3b8; }
@@ -141,7 +141,7 @@
 <body>
 
     <header>
-        <h1>PAINEL DE ATENDIMENTO</h1>
+        <h1>COLÉGIO LA SALLE - PAINEL DE ATENDIMENTO</h1>
         <div class="clock" id="relogio">00:00:00</div>
     </header>
 
@@ -163,21 +163,18 @@
     <script>
         let ultimaSenhaId = null;
 
-        // Atualizar Relógio
         setInterval(() => {
             document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR');
         }, 1000);
 
-        // Síntese de Voz (Web Speech API)
         function anunciarSenha(codigo, guiche) {
             if ('speechSynthesis' in window) {
-                // Toca aviso sonoro simples
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                osc.frequency.value = 587.33; // D5 note
+                osc.frequency.value = 587.33;
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.3);
@@ -203,19 +200,17 @@
                     document.getElementById('mainCode').innerText = atual.codigo;
                     document.getElementById('mainGuiche').innerText = atual.guiche || 'Guichê --';
 
-                    // Se for uma nova senha chamada ou rechamada, fala!
                     if (ultimaSenhaId !== atual.id + '_' + atual.dataChamada) {
                         ultimaSenhaId = atual.id + '_' + atual.dataChamada;
                         anunciarSenha(atual.codigo, atual.guiche);
                     }
 
-                    // Renderizar histórico (itens 1 em diante)
                     const historyList = document.getElementById('historyList');
                     historyList.innerHTML = '';
 
                     senhas.slice(1).forEach(item => {
                         const li = document.createElement('li');
-                        const classeTipo = item.tipo === 'PREFERENCIAL' ? 'pref' : (item.tipo === 'EXAMES' ? 'exa' : 'nor');
+                        const classeTipo = item.tipo === 'RECEPCAO_PREFERENCIAL' ? 'pref' : (item.tipo === 'STORE_UNIFORMES' ? 'sto' : 'rec');
                         li.className = `history-item ${classeTipo}`;
                         li.innerHTML = `
                             <span class="history-code">${item.codigo}</span>
@@ -229,7 +224,6 @@
             }
         }
 
-        // Polling a cada 3 segundos
         setInterval(atualizarPainel, 3000);
         atualizarPainel();
     </script>

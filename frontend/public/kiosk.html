@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGA - Totem de Atendimento</title>
+    <title>SGA - Totem Colégio La Salle</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -25,14 +25,14 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             width: 100%;
             text-align: center;
         }
 
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             color: #38bdf8;
         }
 
@@ -44,7 +44,7 @@
 
         .buttons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
         }
 
@@ -78,15 +78,15 @@
             background: rgba(245, 158, 11, 0.2);
         }
 
-        .btn-tipo.exa {
-            border-color: #10b981;
+        .btn-tipo.store {
+            border-color: #ec4899;
         }
-        .btn-tipo.exa:hover {
-            background: rgba(16, 185, 129, 0.2);
+        .btn-tipo.store:hover {
+            background: rgba(236, 72, 153, 0.2);
         }
 
         .icon {
-            font-size: 3rem;
+            font-size: 3.2rem;
         }
 
         /* Modal Imprimir Senha */
@@ -105,7 +105,7 @@
             color: #0f172a;
             padding: 40px;
             border-radius: 16px;
-            width: 320px;
+            width: 340px;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             animation: popIn 0.3s ease-out;
@@ -116,7 +116,7 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        .ticket h2 { font-size: 1.2rem; color: #64748b; text-transform: uppercase; }
+        .ticket h2 { font-size: 1.2rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
         .ticket .code { font-size: 3.5rem; font-weight: 700; color: #0284c7; margin: 15px 0; }
         .ticket .type-name { font-weight: 600; font-size: 1rem; color: #334155; margin-bottom: 20px; }
         .ticket .date { font-size: 0.85rem; color: #94a3b8; }
@@ -137,26 +137,26 @@
     <a href="index.html" class="back-link">← Voltar ao Início</a>
 
     <div class="container">
-        <h1>Seja Bem-Vindo(a)</h1>
-        <p class="subtitle">Selecione o tipo de atendimento desejado para retirar sua senha</p>
+        <h1>Colégio La Salle</h1>
+        <p class="subtitle">Selecione o serviço desejado para retirar sua senha de atendimento</p>
 
         <div class="buttons-grid">
-            <button class="btn-tipo pref" onclick="gerarSenha('PREFERENCIAL')">
+            <button class="btn-tipo" onclick="gerarSenha('RECEPCAO_NORMAL')">
+                <span class="icon">🏫</span>
+                <span>Recepção Geral</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Secretaria, Matrículas, Financeiro</small>
+            </button>
+
+            <button class="btn-tipo store" onclick="gerarSenha('STORE_UNIFORMES')">
+                <span class="icon">👕</span>
+                <span>La Salle Store</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Uniformes & Artigos Escolares</small>
+            </button>
+
+            <button class="btn-tipo pref" onclick="gerarSenha('RECEPCAO_PREFERENCIAL')">
                 <span class="icon">⭐</span>
-                <span>Preferencial</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Idosos, Gestantes, PCD</small>
-            </button>
-
-            <button class="btn-tipo" onclick="gerarSenha('NORMAL')">
-                <span class="icon">👤</span>
-                <span>Atendimento Normal</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Fila Convencional</small>
-            </button>
-
-            <button class="btn-tipo exa" onclick="gerarSenha('EXAMES')">
-                <span class="icon">🧪</span>
-                <span>Exames</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Entrega / Coleta</small>
+                <span>Atendimento Prioritário</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Idosos, Gestantes, PCD, Bebês</small>
             </button>
         </div>
     </div>
@@ -164,11 +164,11 @@
     <!-- Modal do Ticket -->
     <div class="modal-overlay" id="modalTicket">
         <div class="ticket">
-            <h2>SGA HOSPITALAR</h2>
-            <div class="code" id="ticketCodigo">PRE-001</div>
-            <div class="type-name" id="ticketTipo">ATENDIMENTO PREFERENCIAL</div>
-            <div class="date" id="ticketData">03/08/2026 16:45</div>
-            <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Por favor, aguarde a chamada no painel principal.</p>
+            <h2>COLÉGIO LA SALLE</h2>
+            <div class="code" id="ticketCodigo">REC-001</div>
+            <div class="type-name" id="ticketTipo">RECEPÇÃO GERAL</div>
+            <div class="date" id="ticketData">03/08/2026 17:25</div>
+            <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Aguarde a chamada no painel principal da recepção.</p>
         </div>
     </div>
 
@@ -188,7 +188,7 @@
                 const senha = await response.json();
 
                 document.getElementById('ticketCodigo').innerText = senha.codigo;
-                document.getElementById('ticketTipo').innerText = senha.tipo;
+                document.getElementById('ticketTipo').innerText = senha.tipo.replace('_', ' ');
                 document.getElementById('ticketData').innerText = new Date(senha.dataCriacao).toLocaleString('pt-BR');
 
                 const modal = document.getElementById('modalTicket');

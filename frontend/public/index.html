@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGA - Sistema de Gerenciamento de Atendimento</title>
+    <title>SGA - Colégio La Salle (Recepção & Store)</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
             --accent-blue: #38bdf8;
-            --accent-purple: #818cf8;
+            --accent-gold: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -41,7 +41,7 @@
         .header h1 {
             font-size: 2.8rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            background: linear-gradient(135deg, #38bdf8, #f59e0b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
@@ -121,36 +121,36 @@
 <body>
 
     <div class="header">
-        <h1>SGA DevSecOps</h1>
-        <p>Sistema de Gerenciamento de Atendimento Hospitalar & Comercial</p>
+        <h1>SGA - Colégio La Salle</h1>
+        <p>Atendimento Inteligente & Seguro (Recepção Geral & La Salle Store)</p>
     </div>
 
     <div class="grid">
         <a href="kiosk.html" class="card">
             <div class="card-icon">🎟️</div>
             <h2>Totem (Kiosk)</h2>
-            <p>Interface pública para clientes gerarem senhas (Preferencial, Normal ou Exames).</p>
+            <p>Interface pública para pais e alunos retirarem senhas de atendimento.</p>
         </a>
 
         <a href="painel.html" class="card">
             <div class="card-icon">📺</div>
             <h2>Painel TV</h2>
-            <p>Tela de chamada pública em tempo real para monitores e TVs com áudio e síntese de voz.</p>
+            <p>Tela de chamada pública para a recepção com anúncio sonoro e por voz.</p>
         </a>
 
         <a href="atendente.html" class="card">
-            <div class="card-icon">🎧</div>
-            <h2>Guichê do Atendente</h2>
-            <p>Painel de controle para operadores chamarem e gerenciarem a fila de atendimento.</p>
+            <div class="card-icon">🔐</div>
+            <h2>Guichê (Autenticado)</h2>
+            <p>Acesso restrito para atendentes da Recepção e da La Salle Store via Login JWT.</p>
         </a>
     </div>
 
     <div class="badge-sec">
-        🛡️ Ambiente Protegido | DevSecOps & Hardened Containers (Docker/Java 21)
+        🛡️ Proteção JWT + Spring Security | Hardened Docker Container
     </div>
 
     <footer>
-        SGA Security & Cloud Lab &copy; 2026 - Desenvolvido para Aprendizado Prático
+        SGA La Salle Security Lab &copy; 2026 - Desenvolvido para Aprendizado DevSecOps
     </footer>
 
 </body>

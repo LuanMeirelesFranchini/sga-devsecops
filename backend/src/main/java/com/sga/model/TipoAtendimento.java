@@ -1,9 +1,9 @@
 package com.sga.model;
 
 public enum TipoAtendimento {
-    PREFERENCIAL("PRE", "Atendimento Preferencial (Idosos, Gestantes, PCD)"),
-    NORMAL("NOR", "Atendimento Convencional / Normal"),
-    EXAMES("EXA", "Entrega e Coleta de Exames");
+    RECEPCAO_PREFERENCIAL("PRE", "Recepção - Atendimento Prioritário (Idosos, Gestantes, PCD)"),
+    RECEPCAO_NORMAL("REC", "Recepção Geral / Secretaria / Matrículas"),
+    STORE_UNIFORMES("STO", "La Salle Store - Uniformes e Artigos");
 
     private final String sigla;
     private final String descricao;

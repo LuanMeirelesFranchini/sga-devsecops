@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,10 +79,10 @@ public class SenhaService {
 
     public EstatisticaFilaDTO obterEstatisticasFila() {
         long total = senhaRepository.countByStatus(StatusSenha.AGUARDANDO);
-        long pref = senhaRepository.countByTipoAndStatus(TipoAtendimento.PREFERENCIAL, StatusSenha.AGUARDANDO);
-        long norm = senhaRepository.countByTipoAndStatus(TipoAtendimento.NORMAL, StatusSenha.AGUARDANDO);
-        long exam = senhaRepository.countByTipoAndStatus(TipoAtendimento.EXAMES, StatusSenha.AGUARDANDO);
+        long pref = senhaRepository.countByTipoAndStatus(TipoAtendimento.RECEPCAO_PREFERENCIAL, StatusSenha.AGUARDANDO);
+        long rec = senhaRepository.countByTipoAndStatus(TipoAtendimento.RECEPCAO_NORMAL, StatusSenha.AGUARDANDO);
+        long store = senhaRepository.countByTipoAndStatus(TipoAtendimento.STORE_UNIFORMES, StatusSenha.AGUARDANDO);
 
-        return new EstatisticaFilaDTO(total, pref, norm, exam);
+        return new EstatisticaFilaDTO(total, pref, rec, store);
     }
 }
