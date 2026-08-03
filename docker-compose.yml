@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # -------------------------------------------------------------
+  # 1. Banco de Dados PostgreSQL (Persistência Segura)
+  # -------------------------------------------------------------
+  sga-db:
+    image: postgres:16-alpine
+    container_name: sga-db
+    restart: always
+    environment:
+      POSTGRES_DB: sgadb
+      POSTGRES_USER: sgauser
+      POSTGRES_PASSWORD: sgapassword123!
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sga-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sgauser -d sgadb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------------
+  # 2. Backend Spring Boot (Java 21 - Hardened Image)
+  # -------------------------------------------------------------
+  sga-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sga-backend
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sga-db:5432/sgadb
+      SPRING_DATASOURCE_USERNAME: sgauser
+      SPRING_DATASOURCE_PASSWORD: sgapassword123!
+      SPRING_DATASOURCE_DRIVER: org.postgresql.Driver
+    depends_on:
+      sga-db:
+        condition: service_healthy
+    networks:
+      - sga-network
+
+  # -------------------------------------------------------------
+  # 3. Frontend Nginx (Servidor Web & Proxy Reverso)
+  # -------------------------------------------------------------
+  sga-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sga-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - sga-backend
+    networks:
+      - sga-network
+
+networks:
+  sga-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

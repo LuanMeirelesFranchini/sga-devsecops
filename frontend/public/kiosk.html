@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA - Totem de Atendimento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1e293b, #0f172a);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #38bdf8;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .btn-tipo {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px 20px;
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-tipo:hover {
+            transform: scale(1.05);
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .btn-tipo.pref {
+            border-color: #f59e0b;
+        }
+        .btn-tipo.pref:hover {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-tipo.exa {
+            border-color: #10b981;
+        }
+        .btn-tipo.exa:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .icon {
+            font-size: 3rem;
+        }
+
+        /* Modal Imprimir Senha */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ticket {
+            background: #ffffff;
+            color: #0f172a;
+            padding: 40px;
+            border-radius: 16px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .ticket h2 { font-size: 1.2rem; color: #64748b; text-transform: uppercase; }
+        .ticket .code { font-size: 3.5rem; font-weight: 700; color: #0284c7; margin: 15px 0; }
+        .ticket .type-name { font-weight: 600; font-size: 1rem; color: #334155; margin-bottom: 20px; }
+        .ticket .date { font-size: 0.85rem; color: #94a3b8; }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .back-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-link">← Voltar ao Início</a>
+
+    <div class="container">
+        <h1>Seja Bem-Vindo(a)</h1>
+        <p class="subtitle">Selecione o tipo de atendimento desejado para retirar sua senha</p>
+
+        <div class="buttons-grid">
+            <button class="btn-tipo pref" onclick="gerarSenha('PREFERENCIAL')">
+                <span class="icon">⭐</span>
+                <span>Preferencial</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Idosos, Gestantes, PCD</small>
+            </button>
+
+            <button class="btn-tipo" onclick="gerarSenha('NORMAL')">
+                <span class="icon">👤</span>
+                <span>Atendimento Normal</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Fila Convencional</small>
+            </button>
+
+            <button class="btn-tipo exa" onclick="gerarSenha('EXAMES')">
+                <span class="icon">🧪</span>
+                <span>Exames</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Entrega / Coleta</small>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal do Ticket -->
+    <div class="modal-overlay" id="modalTicket">
+        <div class="ticket">
+            <h2>SGA HOSPITALAR</h2>
+            <div class="code" id="ticketCodigo">PRE-001</div>
+            <div class="type-name" id="ticketTipo">ATENDIMENTO PREFERENCIAL</div>
+            <div class="date" id="ticketData">03/08/2026 16:45</div>
+            <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Por favor, aguarde a chamada no painel principal.</p>
+        </div>
+    </div>
+
+    <script>
+        async function gerarSenha(tipo) {
+            try {
+                const response = await fetch('/api/senhas/gerar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tipo: tipo })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha ao gerar senha no servidor.');
+                }
+
+                const senha = await response.json();
+
+                document.getElementById('ticketCodigo').innerText = senha.codigo;
+                document.getElementById('ticketTipo').innerText = senha.tipo;
+                document.getElementById('ticketData').innerText = new Date(senha.dataCriacao).toLocaleString('pt-BR');
+
+                const modal = document.getElementById('modalTicket');
+                modal.style.display = 'flex';
+
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 4000);
+
+            } catch (err) {
+                alert('Erro de Conexão: ' + err.message);
+            }
+        }
+    </script>
+</body>
+</html>

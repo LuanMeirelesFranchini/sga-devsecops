@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA - Sistema de Gerenciamento de Atendimento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #1e293b, #0f172a);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .badge-sec {
+            margin-top: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+        }
+
+        footer {
+            margin-top: 50px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>SGA DevSecOps</h1>
+        <p>Sistema de Gerenciamento de Atendimento Hospitalar & Comercial</p>
+    </div>
+
+    <div class="grid">
+        <a href="kiosk.html" class="card">
+            <div class="card-icon">🎟️</div>
+            <h2>Totem (Kiosk)</h2>
+            <p>Interface pública para clientes gerarem senhas (Preferencial, Normal ou Exames).</p>
+        </a>
+
+        <a href="painel.html" class="card">
+            <div class="card-icon">📺</div>
+            <h2>Painel TV</h2>
+            <p>Tela de chamada pública em tempo real para monitores e TVs com áudio e síntese de voz.</p>
+        </a>
+
+        <a href="atendente.html" class="card">
+            <div class="card-icon">🎧</div>
+            <h2>Guichê do Atendente</h2>
+            <p>Painel de controle para operadores chamarem e gerenciarem a fila de atendimento.</p>
+        </a>
+    </div>
+
+    <div class="badge-sec">
+        🛡️ Ambiente Protegido | DevSecOps & Hardened Containers (Docker/Java 21)
+    </div>
+
+    <footer>
+        SGA Security & Cloud Lab &copy; 2026 - Desenvolvido para Aprendizado Prático
+    </footer>
+
+</body>
+</html>
