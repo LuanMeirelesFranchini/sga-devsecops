@@ -37,6 +37,7 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/api/senhas/**", "/h2-console/**", "/actuator/health").permitAll()
+                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/atendimento/**").authenticated()
                 .anyRequest().authenticated()
             )

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA - Painel de Administração (La Salle)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Card de Login Admin */
+        .login-card {
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        .login-card h2 { font-size: 1.8rem; color: #38bdf8; margin-bottom: 10px; }
+        .login-card p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px; }
+
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 0.9rem; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover { background: #7dd3fc; }
+
+        /* Dashboard Admin */
+        .admin-dashboard {
+            max-width: 1000px;
+            width: 100%;
+            display: none;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: #1e293b;
+            padding: 20px 30px;
+            border-radius: 16px;
+            border: 1px solid #334155;
+        }
+
+        .header-bar h2 { font-size: 1.6rem; color: #38bdf8; }
+
+        .card-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-box-header h3 { font-size: 1.3rem; color: #f8fafc; }
+
+        .btn-add {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .table-users {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .table-users th, .table-users td {
+            padding: 14px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .table-users th { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; }
+
+        .badge-role {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .role-admin { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+        .role-atendente { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
+
+        .back-link { display: inline-block; color: #94a3b8; text-decoration: none; margin-bottom: 20px; }
+
+        /* Modal Novo Usuário */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid #38bdf8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CARD LOGIN ADMIN -->
+    <div class="login-card" id="loginCard">
+        <h2>Painel Admin</h2>
+        <p>Acesso Restrito para Administradores do Sistema SGA</p>
+
+        <form onsubmit="realizarLoginAdmin(event)">
+            <div class="form-group">
+                <label for="inputAdminUser">Usuário Admin</label>
+                <input type="text" id="inputAdminUser" placeholder="Ex: admin" required>
+            </div>
+            <div class="form-group">
+                <label for="inputAdminPass">Senha</label>
+                <input type="password" id="inputAdminPass" placeholder="Digite a senha de administrador" required>
+            </div>
+            <button type="submit" class="btn-primary">Entrar no Painel Admin</button>
+        </form>
+        <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Usuário padrão: <b>admin</b> | Senha: <b>admin123</b></p>
+    </div>
+
+    <!-- DASHBOARD ADMIN -->
+    <div class="admin-dashboard" id="adminDashboard">
+        <a href="index.html" class="back-link">← Voltar ao Início</a>
+
+        <div class="header-bar">
+            <h2>⚙️ Administração SGA - Colégio La Salle</h2>
+            <button class="btn-danger" onclick="realizarLogoutAdmin()">Sair do Admin</button>
+        </div>
+
+        <div class="card-box">
+            <div class="card-box-header">
+                <h3>👥 Gerenciamento de Usuários (Atendentes & Admins)</h3>
+                <button class="btn-add" onclick="abrirModalCriarUsuario()">+ Novo Usuário</button>
+            </div>
+
+            <table class="table-users">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuário</th>
+                        <th>Nome Completo</th>
+                        <th>Função (Role)</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyUsuarios">
+                    <tr><td colspan="5" style="text-align:center; color:#94a3b8;">Carregando usuários...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-box">
+            <div class="card-box-header">
+                <h3>🧹 Manutenção do Sistema</h3>
+                <button class="btn-danger" onclick="resetarFilas()">Zerar Todas as Filas do Dia</button>
+            </div>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Reseta o contador diário e limpa o banco de dados de senhas para o início de um novo turno.</p>
+        </div>
+    </div>
+
+    <!-- MODAL NOVO USUÁRIO -->
+    <div class="modal" id="modalCriarUsuario">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: #38bdf8;">Cadastrar Novo Usuário</h3>
+            <form onsubmit="salvarNovoUsuario(event)">
+                <div class="form-group">
+                    <label for="newUsername">Nome de Usuário (Login)</label>
+                    <input type="text" id="newUsername" placeholder="Ex: recepcionista2" required>
+                </div>
+                <div class="form-group">
+                    <label for="newNome">Nome Completo</label>
+                    <input type="text" id="newNome" placeholder="Ex: Maria Silva" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Senha</label>
+                    <input type="password" id="newPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="newRole">Perfil de Acesso</label>
+                    <select id="newRole">
+                        <option value="ROLE_ATENDENTE">Atendente do Guichê</option>
+                        <option value="ROLE_ADMIN">Administrador do Sistema</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 25px;">
+                    <button type="submit" class="btn-primary" style="flex: 1;">Salvar Usuário</button>
+                    <button type="button" class="btn-danger" style="flex: 1;" onclick="fecharModalCriarUsuario()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let tokenAdmin = sessionStorage.getItem('sga_admin_token');
+
+        function verificarSessaoAdmin() {
+            if (tokenAdmin) {
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                carregarUsuarios();
+            } else {
+                document.getElementById('loginCard').style.display = 'block';
+                document.getElementById('adminDashboard').style.display = 'none';
+            }
+        }
+
+        async function realizarLoginAdmin(e) {
+            e.preventDefault();
+            const username = document.getElementById('inputAdminUser').value;
+            const password = document.getElementById('inputAdminPass').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!res.ok) {
+                    alert('Usuário ou senha incorretos!');
+                    return;
+                }
+
+                const data = await res.json();
+                if (data.role !== 'ROLE_ADMIN') {
+                    alert('Acesso Negado: Este usuário não possui privilégios de Administrador.');
+                    return;
+                }
+
+                tokenAdmin = data.token;
+                sessionStorage.setItem('sga_admin_token', tokenAdmin);
+                verificarSessaoAdmin();
+            } catch (err) {
+                alert('Erro de Conexão: ' + err.message);
+            }
+        }
+
+        function realizarLogoutAdmin() {
+            sessionStorage.removeItem('sga_admin_token');
+            tokenAdmin = null;
+            verificarSessaoAdmin();
+        }
+
+        async function carregarUsuarios() {
+            try {
+                const res = await fetch('/api/admin/usuarios', {
+                    headers: { 'Authorization': `Bearer ${tokenAdmin}` }
+                });
+
+                if (res.status === 403 || res.status === 401) {
+                    alert('Sessão expirada ou sem permissão.');
+                    realizarLogoutAdmin();
+                    return;
+                }
+
+                const usuarios = await res.json();
+                const tbody = document.getElementById('tbodyUsuarios');
+                tbody.innerHTML = '';
+
+                usuarios.forEach(u => {
+                    const tr = document.createElement('tr');
+                    const isRoleAdmin = u.role === 'ROLE_ADMIN';
+                    const badgeClass = isRoleAdmin ? 'role-admin' : 'role-atendente';
+
+                    tr.innerHTML = `
+                        <td>${u.id}</td>
+                        <td><strong>${u.username}</strong></td>
+                        <td>${u.nome}</td>
+                        <td><span class="badge-role ${badgeClass}">${isRoleAdmin ? 'ADMINISTRADOR' : 'ATENDENTE'}</span></td>
+                        <td>
+                            ${u.username !== 'admin' ? `<button class="btn-danger" onclick="excluirUsuario(${u.id}, '${u.username}')">Excluir</button>` : '<span style="color:#64748b; font-size:0.8rem;">(Protegido)</span>'}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function abrirModalCriarUsuario() {
+            document.getElementById('modalCriarUsuario').style.display = 'flex';
+        }
+
+        function fecharModalCriarUsuario() {
+            document.getElementById('modalCriarUsuario').style.display = 'none';
+        }
+
+        async function salvarNovoUsuario(e) {
+            e.preventDefault();
+            const username = document.getElementById('newUsername').value;
+            const nome = document.getElementById('newNome').value;
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('newRole').value;
+
+            try {
+                const res = await fetch('/api/admin/usuarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${tokenAdmin}`
+                    },
+                    body: JSON.stringify({ username, password, nome, role })
+                });
+
+                if (res.status === 409) {
+                    alert('Erro: Já existe um usuário cadastrado com esse nome de login.');
+                    return;
+                }
+
+                if (!res.ok) {
+                    alert('Erro ao criar usuário.');
+                    return;
+                }
+
+                alert('Usuário cadastrado com sucesso!');
+                fecharModalCriarUsuario();
+                carregarUsuarios();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        async function excluirUsuario(id, username) {
+            if (!confirm(`Tem certeza que deseja excluir o usuário "${username}"?`)) return;
+
+            try {
+                const res = await fetch(`/api/admin/usuarios/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${tokenAdmin}` }
+                });
+
+                if (res.ok) {
+                    alert('Usuário excluído com sucesso!');
+                    carregarUsuarios();
+                }
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        async function resetarFilas() {
+            if (!confirm('Deseja REALMENTE zerar todas as filas de atendimento do dia? Essa ação não pode ser desfeita.')) return;
+
+            try {
+                const res = await fetch('/api/admin/reset-filas', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${tokenAdmin}` }
+                });
+
+                if (res.ok) {
+                    alert('Filas resetadas com sucesso!');
+                }
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        verificarSessaoAdmin();
+    </script>
+</body>
+</html>

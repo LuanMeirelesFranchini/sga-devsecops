@@ -12,7 +12,6 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    // Chave secreta HMAC-SHA (256+ bits) para assinatura dos tokens JWT
     private static final String JWT_SECRET = "SGA_DevSecOps_Secret_Key_For_La_Salle_2026_School_System!";
     private static final long JWT_EXPIRATION_MS = 86400000; // 24 Horas
 
@@ -33,13 +32,19 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser()
+        return getClaimsFromToken(token).getSubject();
+    }
+
+    public String getRoleFromToken(String token) {
+        return getClaimsFromToken(token).get("role", String.class);
+    }
+
+    private Claims getClaimsFromToken(String token) {
+        return Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-
-        return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
