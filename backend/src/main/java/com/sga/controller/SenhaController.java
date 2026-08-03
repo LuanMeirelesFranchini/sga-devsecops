@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*") // Nginx proxy cuidará das origens em prod
+@CrossOrigin(origins = "*")
 public class SenhaController {
 
     private final SenhaService senhaService;
@@ -34,15 +34,15 @@ public class SenhaController {
     @PostMapping("/atendimento/chamar")
     public ResponseEntity<?> chamarProxima(@Valid @RequestBody ChamarSenhaDTO dto) {
         return senhaService.chamarProximaSenha(dto.guiche(), dto.tipoFila())
-                .<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).body("Nenhuma senha aguardando na fila."));
+                .map(senha -> ResponseEntity.ok(senha))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
     // Guichê - Rechamar Senha
     @PostMapping("/atendimento/{id}/rechamar")
     public ResponseEntity<Senha> rechamarSenha(@PathVariable Long id) {
         return senhaService.rechamarSenha(id)
-                .map(ResponseEntity::ok)
+                .map(senha -> ResponseEntity.ok(senha))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -50,7 +50,7 @@ public class SenhaController {
     @PostMapping("/atendimento/{id}/concluir")
     public ResponseEntity<Senha> concluirAtendimento(@PathVariable Long id) {
         return senhaService.concluirAtendimento(id)
-                .map(ResponseEntity::ok)
+                .map(senha -> ResponseEntity.ok(senha))
                 .orElse(ResponseEntity.notFound().build());
     }
 
