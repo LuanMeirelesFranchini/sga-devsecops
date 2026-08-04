@@ -104,11 +104,78 @@
             font-weight: 600;
             cursor: pointer;
         }
+        .login-card {
+            background: #1e293b;
+            border: 1px solid #10b981;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            text-align: center;
+            display: none;
+        }
+
+        .login-card h2 { font-size: 1.8rem; color: #10b981; margin-bottom: 10px; }
+        .login-card p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px; }
+
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 0.9rem; }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover { background: #059669; }
+
+        .dashboard {
+            max-width: 1000px;
+            width: 100%;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
+    <!-- CARD LOGIN -->
+    <div class="login-card" id="loginCard">
+        <h2>Acesso aos Relatórios</h2>
+        <p>Faça login como Administrador ou Supervisor.</p>
+
+        <form onsubmit="realizarLoginRelatorio(event)">
+            <div class="form-group">
+                <label for="inputUser">Usuário</label>
+                <input type="text" id="inputUser" placeholder="Ex: admin ou supervisor" required>
+            </div>
+            <div class="form-group">
+                <label for="inputPass">Senha</label>
+                <input type="password" id="inputPass" placeholder="Sua senha" required>
+            </div>
+            <button type="submit" class="btn-primary">Acessar Dashboard</button>
+        </form>
+        <br>
+        <a href="index.html" class="back-link">← Voltar</a>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
         <a href="javascript:history.back()" class="back-link">← Voltar</a>
 
         <div class="header-bar">
@@ -153,11 +220,50 @@
     </div>
 
     <script>
-        const token = sessionStorage.getItem('sga_admin_token') || sessionStorage.getItem('sga_token');
+        let token = sessionStorage.getItem('sga_admin_token') || sessionStorage.getItem('sga_token');
 
-        if (!token) {
-            alert('Acesso negado. Faça login primeiro.');
-            window.location.href = 'index.html';
+        function verificarAutenticacao() {
+            if (token) {
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                carregarRelatorios();
+            } else {
+                document.getElementById('loginCard').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'none';
+            }
+        }
+
+        async function realizarLoginRelatorio(e) {
+            e.preventDefault();
+            const username = document.getElementById('inputUser').value;
+            const password = document.getElementById('inputPass').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!res.ok) {
+                    alert('Usuário ou senha incorretos!');
+                    return;
+                }
+
+                const data = await res.json();
+                
+                // Permitir apenas Admin e Supervisor
+                if (data.role !== 'ROLE_ADMIN' && data.role !== 'ROLE_SUPERVISOR') {
+                    alert('Acesso Negado: Apenas Administradores ou Supervisores têm acesso aos Relatórios.');
+                    return;
+                }
+
+                token = data.token;
+                sessionStorage.setItem('sga_admin_token', token); // Salva para reutilizar a sessão
+                verificarAutenticacao();
+            } catch (err) {
+                alert('Erro ao realizar login: ' + err.message);
+            }
         }
 
         async function carregarRelatorios() {
@@ -219,10 +325,11 @@
         function realizarLogout() {
             sessionStorage.removeItem('sga_admin_token');
             sessionStorage.removeItem('sga_token');
-            window.location.href = 'index.html';
+            token = null;
+            verificarAutenticacao();
         }
 
-        carregarRelatorios();
+        verificarAutenticacao();
     </script>
 </body>
 </html>
