@@ -36,10 +36,20 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/senhas/**", "/h2-console/**", "/actuator/health").permitAll()
-                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/atendimento/**").authenticated()
-                .anyRequest().authenticated()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/senhas/gerar", "/api/senhas/painel").permitAll()
+                    .requestMatchers("/actuator/health", "/h2-console/**").permitAll()
+                    
+                    // Rotas de Relatórios acessíveis por ADMIN e SUPERVISOR
+                    .requestMatchers("/api/relatorios/**").hasAnyRole("ADMIN", "SUPERVISOR")
+                    
+                    // Rota de gerenciamento de usuários exclusiva para ADMIN
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    
+                    // Rotas de atendimento e notificações exigem qualquer tipo de autenticação
+                    .requestMatchers("/api/notificacoes/**").authenticated()
+                    .requestMatchers("/api/atendimento/**").authenticated()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

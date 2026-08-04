@@ -231,6 +231,7 @@
                 <select id="setorSelect" onchange="salvarSetorAtuacao()">
                     <option value="RECEPCAO">Recepção Geral</option>
                     <option value="STORE">La Salle Store</option>
+                    <option value="DIRECAO">Direção (Agendamentos)</option>
                     <option value="TODOS">Geral (Todos)</option>
                 </select>
 
@@ -364,6 +365,7 @@
                 const data = await res.json();
 
                 document.getElementById('mTotal').innerText = data.totalAguardando;
+                // Os identificadores HTML não incluem direção ainda, então só mantemos os que existem.
                 document.getElementById('mRecPref').innerText = data.recepcaoPreferencial;
                 document.getElementById('mRecNorm').innerText = data.recepcaoNormal;
                 document.getElementById('mStoPref').innerText = data.storePreferencial;
@@ -473,8 +475,64 @@
             }
         }
 
+        // ==========================================
+        // NOTIFICAÇÕES EM TEMPO REAL (SSE) & AUDIO
+        // ==========================================
+        let sseSource = null;
+
+        function playBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 800; // Frequência do Beep
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } catch (e) { console.warn("Áudio não suportado"); }
+        }
+
+        function iniciarConexaoSSE() {
+            if (sseSource) sseSource.close();
+            
+            // Adiciona o token JWT na URL é a forma mais fácil com SSE padrão nativo
+            sseSource = new EventSource('/api/notificacoes/stream?token=' + tokenJWT);
+            
+            sseSource.addEventListener('nova_senha', (event) => {
+                const senha = JSON.parse(event.data);
+                const setorSelecionado = document.getElementById('setorSelect').value;
+                
+                // Verifica se a senha pertence ao setor que o atendente está visualizando
+                const pertenceAoSetor = (setorSelecionado === 'TODOS') || 
+                                        (senha.tipo && senha.tipo.startsWith(setorSelecionado));
+
+                if (pertenceAoSetor) {
+                    playBeep();
+                    carregarEstatisticas();
+                    
+                    // Se a aba não estiver focada, tenta mostrar notificação
+                    if (Notification.permission === 'granted' && document.hidden) {
+                        new Notification("Nova Senha!", { body: `Senha ${senha.codigo} aguardando.` });
+                    }
+                }
+            });
+        }
+
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
         verificarAutenticacao();
-        setInterval(carregarEstatisticas, 3000);
+        if (tokenJWT) iniciarConexaoSSE();
+        // Fallback de polling a cada 15s para garantir que não perdeu evento de desconexão longa
+        setInterval(carregarEstatisticas, 15000);
     </script>
 </body>
 </html>

@@ -183,6 +183,12 @@
                     <span>La Salle Store</span>
                     <small style="font-size: 0.9rem; font-weight: 300; opacity: 0.8">Uniformes & Materiais</small>
                 </button>
+
+                <button class="btn-tipo" style="border-color: #8b5cf6;" onclick="gerarSenhaDireta('DIRECAO_AGENDADO')" onmouseover="this.style.background='rgba(139, 92, 246, 0.2)'" onmouseout="this.style.background='rgba(30, 41, 59, 0.8)'">
+                    <span class="icon">📅</span>
+                    <span>Agendamentos</span>
+                    <small style="font-size: 0.9rem; font-weight: 300; opacity: 0.8">Direção & Coordenação</small>
+                </button>
             </div>
         </div>
 
@@ -270,6 +276,36 @@
             } catch (err) {
                 alert('Erro de Conexão: ' + err.message);
                 voltarParaSetores();
+            }
+        }
+
+        async function gerarSenhaDireta(tipoFinal) {
+            try {
+                const response = await fetch('/api/senhas/gerar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tipo: tipoFinal })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha ao gerar senha no servidor.');
+                }
+
+                const senha = await response.json();
+
+                document.getElementById('ticketCodigo').innerText = senha.codigo;
+                document.getElementById('ticketTipo').innerText = senha.tipo.replace('_', ' ');
+                document.getElementById('ticketData').innerText = new Date(senha.dataCriacao).toLocaleString('pt-BR');
+
+                const modal = document.getElementById('modalTicket');
+                modal.style.display = 'flex';
+
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 4000);
+
+            } catch (err) {
+                alert('Erro de Conexão: ' + err.message);
             }
         }
     </script>

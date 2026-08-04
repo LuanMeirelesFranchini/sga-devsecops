@@ -257,6 +257,7 @@
                     <label for="newRole">Perfil de Acesso</label>
                     <select id="newRole">
                         <option value="ROLE_ATENDENTE">Atendente do Guichê</option>
+                        <option value="ROLE_SUPERVISOR">Supervisor (Relatórios)</option>
                         <option value="ROLE_ADMIN">Administrador do Sistema</option>
                     </select>
                 </div>
@@ -361,14 +362,24 @@
 
                 usuarios.forEach(u => {
                     const tr = document.createElement('tr');
-                    const isRoleAdmin = u.role === 'ROLE_ADMIN';
-                    const badgeClass = isRoleAdmin ? 'role-admin' : 'role-atendente';
+                    let badgeClass = '';
+                    let roleDisplay = '';
+                    if (u.role === 'ROLE_ADMIN') {
+                        badgeClass = 'admin';
+                        roleDisplay = 'ADMINISTRADOR';
+                    } else if (u.role === 'ROLE_SUPERVISOR') {
+                        badgeClass = 'admin'; // Usaremos a mesma cor ou podemos criar outra depois
+                        roleDisplay = 'SUPERVISOR';
+                    } else {
+                        badgeClass = 'atendente';
+                        roleDisplay = 'ATENDENTE';
+                    }
 
                     tr.innerHTML = `
                         <td>${u.id}</td>
                         <td><strong>${u.username}</strong></td>
                         <td>${u.nome}</td>
-                        <td><span class="badge-role ${badgeClass}">${isRoleAdmin ? 'ADMINISTRADOR' : 'ATENDENTE'}</span></td>
+                        <td><span class="badge-role ${badgeClass}">${roleDisplay}</span></td>
                         <td>
                             <button class="btn-warning" onclick="abrirModalAlterarSenha(${u.id}, '${u.username}')">Senha</button>
                             ${u.username !== 'admin' ? `<button class="btn-danger" onclick="excluirUsuario(${u.id}, '${u.username}')">Excluir</button>` : '<span style="color:#64748b; font-size:0.8rem; margin-left:5px;">(Protegido)</span>'}

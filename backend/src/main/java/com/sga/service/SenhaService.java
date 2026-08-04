@@ -18,9 +18,11 @@ import java.util.Optional;
 public class SenhaService {
 
     private final SenhaRepository senhaRepository;
+    private final SseService sseService;
 
-    public SenhaService(SenhaRepository senhaRepository) {
+    public SenhaService(SenhaRepository senhaRepository, SseService sseService) {
         this.senhaRepository = senhaRepository;
+        this.sseService = sseService;
     }
 
     @Transactional
@@ -32,7 +34,12 @@ public class SenhaService {
         String codigoFormatado = String.format("%s-%03d", tipo.getSigla(), novoNumero);
 
         Senha novaSenha = new Senha(codigoFormatado, tipo, novoNumero);
-        return senhaRepository.save(novaSenha);
+        Senha senhaSalva = senhaRepository.save(novaSenha);
+        
+        // Dispara evento SSE para o frontend (passando o objeto JSON da senha)
+        sseService.dispatch("nova_senha", senhaSalva);
+        
+        return senhaSalva;
     }
 
     @Transactional
@@ -46,6 +53,9 @@ public class SenhaService {
             aguardando = senhaRepository.findProximaSenhaStore(StatusSenha.AGUARDANDO);
         } else if (setor == SetorAtendimento.RECEPCAO) {
             aguardando = senhaRepository.findProximaSenhaRecepcao(StatusSenha.AGUARDANDO);
+        } else if (setor == SetorAtendimento.DIRECAO) {
+            aguardando = senhaRepository.findByStatusOrderByDataCriacaoAsc(StatusSenha.AGUARDANDO)
+                    .stream().filter(s -> s.getTipo() == TipoAtendimento.DIRECAO_AGENDADO).toList();
         } else {
             aguardando = senhaRepository.findProximaSenhaGeral(StatusSenha.AGUARDANDO);
         }
