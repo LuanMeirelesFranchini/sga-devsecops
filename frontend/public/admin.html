@@ -313,8 +313,13 @@
                     body: JSON.stringify({ username, password })
                 });
 
+                if (res.status === 502 || res.status === 500) {
+                    alert('Erro Crítico: O Backend (Spring Boot) está offline ou reiniciando (502 Bad Gateway). Verifique os logs do Docker!');
+                    return;
+                }
+
                 if (!res.ok) {
-                    alert('Usuário ou senha incorretos!');
+                    alert('Usuário ou senha incorretos! (Ou permissão negada)');
                     return;
                 }
 
