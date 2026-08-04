@@ -31,130 +31,180 @@
         }
 
         h1 {
-            font-size: 2.6rem;
+            font-size: 2.8rem;
             margin-bottom: 5px;
             color: #38bdf8;
         }
 
         p.subtitle {
             color: #94a3b8;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
+            font-size: 1.3rem;
+            margin-bottom: 50px;
+        }
+
+        /* Telas (Passo 1 e Passo 2) */
+        #telaSetores, #telaPrioridades {
+            transition: opacity 0.3s ease;
+        }
+        
+        #telaPrioridades {
+            display: none;
         }
 
         .buttons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
         .btn-tipo {
             background: rgba(30, 41, 59, 0.8);
             border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px 15px;
+            border-radius: 24px;
+            padding: 40px 20px;
             color: #fff;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .btn-tipo:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
             border-color: #38bdf8;
             background: rgba(56, 189, 248, 0.15);
+            box-shadow: 0 15px 40px rgba(56, 189, 248, 0.3);
         }
 
-        .btn-tipo.rec-p { border-color: #f59e0b; }
-        .btn-tipo.rec-p:hover { background: rgba(245, 158, 11, 0.2); }
+        /* Cores Específicas */
+        .btn-tipo.rec { border-color: #38bdf8; }
+        .btn-tipo.rec:hover { background: rgba(56, 189, 248, 0.2); }
 
         .btn-tipo.sto { border-color: #ec4899; }
         .btn-tipo.sto:hover { background: rgba(236, 72, 153, 0.2); }
 
-        .btn-tipo.sto-p { border-color: #a855f7; }
-        .btn-tipo.sto-p:hover { background: rgba(168, 85, 247, 0.2); }
+        .btn-tipo.prioridade { border-color: #f59e0b; }
+        .btn-tipo.prioridade:hover { background: rgba(245, 158, 11, 0.2); }
 
-        .icon { font-size: 3rem; }
+        .btn-tipo.normal { border-color: #10b981; }
+        .btn-tipo.normal:hover { background: rgba(16, 185, 129, 0.2); }
+
+        .icon { font-size: 4rem; margin-bottom: 10px; }
+
+        .btn-voltar {
+            background: transparent;
+            border: 2px solid #64748b;
+            color: #cbd5e1;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-voltar:hover {
+            background: rgba(100, 116, 139, 0.2);
+            color: #fff;
+            border-color: #94a3b8;
+        }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
+            z-index: 1000;
         }
 
         .ticket {
             background: #ffffff;
             color: #0f172a;
             padding: 40px;
-            border-radius: 16px;
-            width: 340px;
+            border-radius: 20px;
+            width: 360px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            animation: popIn 0.3s ease-out;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes popIn {
-            from { transform: scale(0.7); opacity: 0; }
+            from { transform: scale(0.6); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
-        .ticket h2 { font-size: 1.2rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        .ticket .code { font-size: 3.5rem; font-weight: 700; color: #0284c7; margin: 15px 0; }
-        .ticket .type-name { font-weight: 600; font-size: 1rem; color: #334155; margin-bottom: 20px; }
-        .ticket .date { font-size: 0.85rem; color: #94a3b8; }
+        .ticket h2 { font-size: 1.3rem; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; }
+        .ticket .code { font-size: 4rem; font-weight: 900; color: #0284c7; margin: 20px 0; }
+        .ticket .type-name { font-weight: 700; font-size: 1.1rem; color: #334155; margin-bottom: 25px; }
+        .ticket .date { font-size: 0.9rem; color: #94a3b8; }
 
         .back-link {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 30px;
+            left: 30px;
             color: #94a3b8;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
         .back-link:hover { color: #fff; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-link">← Voltar ao Início</a>
+    <a href="index.html" class="back-link">← Sair do Totem</a>
 
     <div class="container">
         <h1>Colégio La Salle</h1>
-        <p class="subtitle">Selecione o serviço e a prioridade para retirar sua senha</p>
+        
+        <!-- PASSO 1: Escolha do Setor -->
+        <div id="telaSetores">
+            <p class="subtitle">Selecione o setor de atendimento desejado</p>
+            <div class="buttons-grid">
+                <button class="btn-tipo rec" onclick="selecionarSetor('RECEPCAO', 'Recepção')">
+                    <span class="icon">🏫</span>
+                    <span>Recepção Geral</span>
+                    <small style="font-size: 0.9rem; font-weight: 300; opacity: 0.8">Secretaria, Matrículas, Financeiro</small>
+                </button>
 
-        <div class="buttons-grid">
-            <button class="btn-tipo" onclick="gerarSenha('RECEPCAO_NORMAL')">
-                <span class="icon">🏫</span>
-                <span>Recepção Geral</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Secretaria, Matrículas, Financeiro</small>
-            </button>
+                <button class="btn-tipo sto" onclick="selecionarSetor('STORE', 'La Salle Store')">
+                    <span class="icon">👕</span>
+                    <span>La Salle Store</span>
+                    <small style="font-size: 0.9rem; font-weight: 300; opacity: 0.8">Uniformes & Materiais</small>
+                </button>
+            </div>
+        </div>
 
-            <button class="btn-tipo rec-p" onclick="gerarSenha('RECEPCAO_PREFERENCIAL')">
-                <span class="icon">⭐</span>
-                <span>Recepção Prioritário</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Idosos, Gestantes, PCD, Bebês</small>
-            </button>
+        <!-- PASSO 2: Escolha da Prioridade -->
+        <div id="telaPrioridades">
+            <p class="subtitle">Setor: <strong id="lblSetorSelecionado" style="color: #38bdf8;">--</strong><br>Agora, selecione o tipo de fila</p>
+            <div class="buttons-grid">
+                <button class="btn-tipo normal" onclick="confirmarPrioridade('NORMAL')">
+                    <span class="icon">🚶‍♂️</span>
+                    <span>Atendimento Normal</span>
+                    <small style="font-size: 0.9rem; font-weight: 300; opacity: 0.8">Fila Convencional</small>
+                </button>
 
-            <button class="btn-tipo sto" onclick="gerarSenha('STORE_NORMAL')">
-                <span class="icon">👕</span>
-                <span>La Salle Store</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Uniformes & Materiais</small>
-            </button>
-
-            <button class="btn-tipo sto-p" onclick="gerarSenha('STORE_PREFERENCIAL')">
-                <span class="icon">🌟</span>
-                <span>Store Prioritário</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Prioritário La Salle Store</small>
+                <button class="btn-tipo prioridade" onclick="confirmarPrioridade('PREFERENCIAL')">
+                    <span class="icon">⭐</span>
+                    <span>Atendimento Prioritário</span>
+                    <small style="font-size: 0.9rem; font-weight: 300; opacity: 0.8">Idosos, Gestantes, PCD, Bebês de Colo</small>
+                </button>
+            </div>
+            
+            <button class="btn-voltar" onclick="voltarParaSetores()">
+                ↩ Voltar para escolha de setor
             </button>
         </div>
     </div>
@@ -166,17 +216,35 @@
             <div class="code" id="ticketCodigo">REC-001</div>
             <div class="type-name" id="ticketTipo">RECEPÇÃO GERAL</div>
             <div class="date" id="ticketData">04/08/2026 17:25</div>
-            <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Por favor, aguarde a chamada no painel principal.</p>
+            <p style="margin-top: 20px; font-size: 0.85rem; color: #64748b; font-weight: 600;">Por favor, retire sua senha e aguarde a chamada no painel.</p>
         </div>
     </div>
 
     <script>
-        async function gerarSenha(tipo) {
+        let setorAtual = ''; // 'RECEPCAO' ou 'STORE'
+
+        function selecionarSetor(setorKey, setorNome) {
+            setorAtual = setorKey;
+            document.getElementById('lblSetorSelecionado').innerText = setorNome;
+            document.getElementById('telaSetores').style.display = 'none';
+            document.getElementById('telaPrioridades').style.display = 'block';
+        }
+
+        function voltarParaSetores() {
+            setorAtual = '';
+            document.getElementById('telaPrioridades').style.display = 'none';
+            document.getElementById('telaSetores').style.display = 'block';
+        }
+
+        async function confirmarPrioridade(prioridadeStr) {
+            // Monta a string do Enum TipoAtendimento: ex "RECEPCAO_NORMAL" ou "STORE_PREFERENCIAL"
+            const tipoFinal = `${setorAtual}_${prioridadeStr}`;
+            
             try {
                 const response = await fetch('/api/senhas/gerar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tipo: tipo })
+                    body: JSON.stringify({ tipo: tipoFinal })
                 });
 
                 if (!response.ok) {
@@ -192,12 +260,16 @@
                 const modal = document.getElementById('modalTicket');
                 modal.style.display = 'flex';
 
+                // Volta para a tela inicial por trás do modal para estar pronto para a próxima pessoa
+                voltarParaSetores();
+
                 setTimeout(() => {
                     modal.style.display = 'none';
                 }, 4000);
 
             } catch (err) {
                 alert('Erro de Conexão: ' + err.message);
+                voltarParaSetores();
             }
         }
     </script>
