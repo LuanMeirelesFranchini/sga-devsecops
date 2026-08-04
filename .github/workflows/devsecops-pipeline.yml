@@ -1,0 +1,52 @@
+name: Pipeline DevSecOps (SGA)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  secret-scanning:
+    name: 🕵️ Gitleaks (Buscador de Senhas)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # O Gitleaks precisa analisar todo o histórico
+      
+      - name: Rodar Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Nota: Se o Gitleaks achar uma senha, o Job vai falhar e bloquear o código!
+
+  sast-analysis:
+    name: 🛡️ Semgrep (Análise de Código Estático)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+      
+      - name: Rodar Semgrep CI
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/default" # Regras da comunidade (OWASP, boas práticas de Java/JS)
+
+  container-security:
+    name: 🐳 Trivy (Vulnerabilidades em Containers)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+      
+      - name: Rodar Trivy Vulnerability Scanner no Dockerfile
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config' # Scaneia o código do Dockerfile (misconfigurations)
+          hide-progress: false
+          format: 'table'
+          exit-code: '1'      # Fazer o job falhar se achar problemas críticos
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
