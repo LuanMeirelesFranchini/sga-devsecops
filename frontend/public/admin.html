@@ -408,7 +408,8 @@
                 }
 
                 if (!res.ok) {
-                    alert('Erro ao criar usuário.');
+                    const errorText = await res.text();
+                    alert(`Erro ao criar usuário: ${errorText}`);
                     return;
                 }
 
