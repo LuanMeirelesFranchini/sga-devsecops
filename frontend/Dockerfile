@@ -1,7 +1,7 @@
 FROM nginxinc/nginx-unprivileged:1.25-alpine
 
-# O usuário 101 é o 'nginx' na imagem unprivileged
-USER 101
+# O usuário nginx existe na imagem unprivileged
+USER nginx
 
 # Copia os arquivos estáticos do frontend
 COPY public/ /usr/share/nginx/html/
