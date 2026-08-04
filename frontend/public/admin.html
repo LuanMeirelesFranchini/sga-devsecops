@@ -109,6 +109,18 @@
             cursor: pointer;
         }
 
+        .btn-warning {
+            background: #f59e0b;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-right: 5px;
+        }
+
         .btn-danger {
             background: #ef4444;
             color: #fff;
@@ -256,6 +268,25 @@
         </div>
     </div>
 
+    <!-- MODAL ALTERAR SENHA -->
+    <div class="modal" id="modalAlterarSenha">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: #f59e0b;">Alterar Senha do Usuário</h3>
+            <p id="txtUsuarioAlterar" style="color: #cbd5e1; margin-bottom: 15px; font-weight: 600;"></p>
+            <form onsubmit="salvarNovaSenha(event)">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label for="editPassword">Nova Senha</label>
+                    <input type="password" id="editPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 25px;">
+                    <button type="submit" class="btn-warning" style="flex: 1; padding: 14px;">Salvar Nova Senha</button>
+                    <button type="button" class="btn-danger" style="flex: 1; padding: 14px;" onclick="fecharModalAlterarSenha()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         let tokenAdmin = sessionStorage.getItem('sga_admin_token');
 
@@ -334,7 +365,8 @@
                         <td>${u.nome}</td>
                         <td><span class="badge-role ${badgeClass}">${isRoleAdmin ? 'ADMINISTRADOR' : 'ATENDENTE'}</span></td>
                         <td>
-                            ${u.username !== 'admin' ? `<button class="btn-danger" onclick="excluirUsuario(${u.id}, '${u.username}')">Excluir</button>` : '<span style="color:#64748b; font-size:0.8rem;">(Protegido)</span>'}
+                            <button class="btn-warning" onclick="abrirModalAlterarSenha(${u.id}, '${u.username}')">Senha</button>
+                            ${u.username !== 'admin' ? `<button class="btn-danger" onclick="excluirUsuario(${u.id}, '${u.username}')">Excluir</button>` : '<span style="color:#64748b; font-size:0.8rem; margin-left:5px;">(Protegido)</span>'}
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -385,6 +417,45 @@
                 carregarUsuarios();
             } catch (err) {
                 alert(err.message);
+            }
+        }
+
+        function abrirModalAlterarSenha(id, username) {
+            document.getElementById('editUserId').value = id;
+            document.getElementById('txtUsuarioAlterar').innerText = `Usuário: ${username}`;
+            document.getElementById('editPassword').value = '';
+            document.getElementById('modalAlterarSenha').style.display = 'flex';
+        }
+
+        function fecharModalAlterarSenha() {
+            document.getElementById('modalAlterarSenha').style.display = 'none';
+        }
+
+        async function salvarNovaSenha(e) {
+            e.preventDefault();
+            const id = document.getElementById('editUserId').value;
+            const novaSenha = document.getElementById('editPassword').value;
+
+            try {
+                const res = await fetch(`/api/admin/usuarios/${id}/alterar-senha`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${tokenAdmin}`
+                    },
+                    body: JSON.stringify({ novaSenha })
+                });
+
+                if (!res.ok) {
+                    const text = await res.text();
+                    alert(`Erro ao alterar senha: ${text}`);
+                    return;
+                }
+
+                alert('Senha alterada com sucesso!');
+                fecharModalAlterarSenha();
+            } catch (err) {
+                alert('Erro de conexão: ' + err.message);
             }
         }
 

@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -56,6 +57,21 @@ public class AdminController {
         Usuario salvo = usuarioRepository.save(novoUsuario);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new UsuarioDTO(salvo.getId(), salvo.getUsername(), salvo.getNome(), salvo.getRole()));
+    }
+
+    // Redefinir Senha de um usuário
+    @PostMapping("/usuarios/{id}/alterar-senha")
+    public ResponseEntity<?> alterarSenha(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String novaSenha = payload.get("novaSenha");
+        if (novaSenha == null || novaSenha.trim().length() < 6) {
+            return ResponseEntity.badRequest().body("A nova senha deve ter no mínimo 6 caracteres.");
+        }
+
+        return usuarioRepository.findById(id).map(user -> {
+            user.setPassword(passwordEncoder.encode(novaSenha));
+            usuarioRepository.save(user);
+            return ResponseEntity.ok("Senha alterada com sucesso!");
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     // Excluir usuário por ID
