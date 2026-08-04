@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -33,25 +34,25 @@ public class SenhaController {
     // Guichê - Chamar Próxima Senha
     @PostMapping("/atendimento/chamar")
     public ResponseEntity<?> chamarProxima(@Valid @RequestBody ChamarSenhaDTO dto) {
-        return senhaService.chamarProximaSenha(dto.guiche(), dto.tipoFila())
-                .map(senha -> ResponseEntity.ok(senha))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
+        Optional<Senha> senhaOpt = senhaService.chamarProximaSenha(dto.guiche(), dto.tipoFila());
+        if (senhaOpt.isPresent()) {
+            return ResponseEntity.ok(senhaOpt.get());
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     // Guichê - Rechamar Senha
     @PostMapping("/atendimento/{id}/rechamar")
     public ResponseEntity<Senha> rechamarSenha(@PathVariable Long id) {
-        return senhaService.rechamarSenha(id)
-                .map(senha -> ResponseEntity.ok(senha))
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Senha> senhaOpt = senhaService.rechamarSenha(id);
+        return senhaOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Guichê - Concluir Atendimento
     @PostMapping("/atendimento/{id}/concluir")
     public ResponseEntity<Senha> concluirAtendimento(@PathVariable Long id) {
-        return senhaService.concluirAtendimento(id)
-                .map(senha -> ResponseEntity.ok(senha))
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Senha> senhaOpt = senhaService.concluirAtendimento(id);
+        return senhaOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Painel TV - Obter chamadas recentes

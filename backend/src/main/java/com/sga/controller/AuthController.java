@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
@@ -30,12 +32,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
-        return usuarioRepository.findByUsername(loginDTO.username())
-                .filter(user -> passwordEncoder.matches(loginDTO.password(), user.getPassword()))
-                .map(user -> {
-                    String token = tokenProvider.generateToken(user.getUsername(), user.getRole(), user.getNome());
-                    return ResponseEntity.ok(new AuthResponseDTO(token, user.getUsername(), user.getNome(), user.getRole()));
-                })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário ou senha inválidos."));
+        Optional<Usuario> userOpt = usuarioRepository.findByUsername(loginDTO.username());
+
+        if (userOpt.isPresent() && passwordEncoder.matches(loginDTO.password(), userOpt.get().getPassword())) {
+            Usuario user = userOpt.get();
+            String token = tokenProvider.generateToken(user.getUsername(), user.getRole(), user.getNome());
+            return ResponseEntity.ok(new AuthResponseDTO(token, user.getUsername(), user.getNome(), user.getRole()));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário ou senha inválidos.");
     }
 }
