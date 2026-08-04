@@ -20,13 +20,13 @@ public interface SenhaRepository extends JpaRepository<Senha, Long> {
 
     List<Senha> findByStatusOrderByDataCriacaoAsc(StatusSenha status);
 
-    @Query("SELECT s FROM Senha s WHERE s.status = :status AND s.tipo IN (com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL, com.sga.model.TipoAtendimento.RECEPCAO_NORMAL) ORDER BY CASE WHEN s.tipo = com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL THEN 1 ELSE 2 END, s.dataCriacao ASC")
+    @Query("SELECT s FROM Senha s WHERE s.status = :status AND s.tipo IN (com.sga.model.TipoAtendimento.DIRECAO_AGENDADO, com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL, com.sga.model.TipoAtendimento.RECEPCAO_NORMAL) ORDER BY CASE WHEN s.tipo = com.sga.model.TipoAtendimento.DIRECAO_AGENDADO THEN 1 WHEN s.tipo = com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL THEN 2 ELSE 3 END, s.dataCriacao ASC")
     List<Senha> findProximaSenhaRecepcao(@Param("status") StatusSenha status);
 
     @Query("SELECT s FROM Senha s WHERE s.status = :status AND s.tipo IN (com.sga.model.TipoAtendimento.STORE_PREFERENCIAL, com.sga.model.TipoAtendimento.STORE_NORMAL) ORDER BY CASE WHEN s.tipo = com.sga.model.TipoAtendimento.STORE_PREFERENCIAL THEN 1 ELSE 2 END, s.dataCriacao ASC")
     List<Senha> findProximaSenhaStore(@Param("status") StatusSenha status);
 
-    @Query("SELECT s FROM Senha s WHERE s.status = :status ORDER BY CASE WHEN s.tipo = com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL OR s.tipo = com.sga.model.TipoAtendimento.STORE_PREFERENCIAL THEN 1 ELSE 2 END, s.dataCriacao ASC")
+    @Query("SELECT s FROM Senha s WHERE s.status = :status ORDER BY CASE WHEN s.tipo = com.sga.model.TipoAtendimento.DIRECAO_AGENDADO THEN 1 WHEN s.tipo = com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL OR s.tipo = com.sga.model.TipoAtendimento.STORE_PREFERENCIAL THEN 2 ELSE 3 END, s.dataCriacao ASC")
     List<Senha> findProximaSenhaGeral(@Param("status") StatusSenha status);
 
     long countByStatus(StatusSenha status);

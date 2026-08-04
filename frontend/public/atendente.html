@@ -510,8 +510,13 @@
                 const setorSelecionado = document.getElementById('setorSelect').value;
                 
                 // Verifica se a senha pertence ao setor que o atendente está visualizando
-                const pertenceAoSetor = (setorSelecionado === 'TODOS') || 
+                let pertenceAoSetor = (setorSelecionado === 'TODOS') || 
                                         (senha.tipo && senha.tipo.startsWith(setorSelecionado));
+                                        
+                // Se for RECEPCAO, também avisa quando for um Agendamento da Direção (AGE)
+                if (setorSelecionado === 'RECEPCAO' && senha.tipo === 'DIRECAO_AGENDADO') {
+                    pertenceAoSetor = true;
+                }
 
                 if (pertenceAoSetor) {
                     playBeep();
