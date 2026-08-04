@@ -24,6 +24,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://sga-db:5432/sgadb
       - SPRING_DATASOURCE_USERNAME=sgauser
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-sgapassword123!}
+      - SPRING_DATASOURCE_DRIVER=org.postgresql.Driver
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     networks:
       - sga-network
