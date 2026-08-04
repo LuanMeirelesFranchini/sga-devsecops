@@ -23,7 +23,6 @@
             align-items: center;
         }
 
-        /* Modal / View de Login */
         .login-card {
             background: #1e293b;
             border: 1px solid #334155;
@@ -35,32 +34,12 @@
             text-align: center;
         }
 
-        .login-card h2 {
-            font-size: 1.8rem;
-            color: #38bdf8;
-            margin-bottom: 10px;
-        }
+        .login-card h2 { font-size: 1.8rem; color: #38bdf8; margin-bottom: 10px; }
+        .login-card p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px; }
 
-        .login-card p {
-            color: #94a3b8;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #cbd5e1;
-            font-size: 0.9rem;
-        }
-
-        .form-group input {
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 0.9rem; }
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px 15px;
             background: #0f172a;
@@ -68,11 +47,6 @@
             border-radius: 10px;
             color: #fff;
             font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #38bdf8;
         }
 
         .btn-login {
@@ -87,12 +61,8 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+        .btn-login:hover { background: #7dd3fc; }
 
-        .btn-login:hover {
-            background: #7dd3fc;
-        }
-
-        /* Dashboard de Atendimento */
         .dashboard {
             max-width: 950px;
             width: 100%;
@@ -108,28 +78,25 @@
             padding: 20px;
             border-radius: 16px;
             border: 1px solid #334155;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .user-info {
+        .user-info { display: flex; align-items: center; gap: 15px; }
+
+        .guiche-controls {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        .guiche-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .guiche-selector input {
+        .guiche-controls input, .guiche-controls select {
             background: #0f172a;
             border: 1px solid #38bdf8;
             color: #fff;
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 8px;
-            font-size: 1rem;
-            width: 140px;
+            font-size: 0.95rem;
         }
 
         .btn-logout {
@@ -144,21 +111,21 @@
 
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
             margin-bottom: 30px;
         }
 
         .metric-card {
             background: #1e293b;
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             border: 1px solid #334155;
         }
 
-        .metric-card h3 { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
-        .metric-card .value { font-size: 2.2rem; font-weight: 700; color: #38bdf8; }
+        .metric-card h3 { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
+        .metric-card .value { font-size: 1.8rem; font-weight: 700; color: #38bdf8; }
 
         .current-section {
             background: linear-gradient(135deg, #1e293b, #0f172a);
@@ -181,7 +148,7 @@
         }
 
         .btn {
-            padding: 15px 30px;
+            padding: 15px 25px;
             border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 700;
@@ -190,25 +157,52 @@
             transition: all 0.2s ease;
         }
 
-        .btn-call { background: #38bdf8; color: #0f172a; font-size: 1.3rem; }
+        .btn-call { background: #38bdf8; color: #0f172a; font-size: 1.2rem; }
         .btn-recall { background: #f59e0b; color: #0f172a; }
         .btn-finish { background: #10b981; color: #fff; }
         .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .back-link {
-            display: inline-block;
-            color: #94a3b8;
-            text-decoration: none;
-            margin-bottom: 20px;
+        .back-link { display: inline-block; color: #94a3b8; text-decoration: none; margin-bottom: 20px; }
+
+        /* Modal Concluir Atendimento com Observação */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            border: 1px solid #38bdf8;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            height: 100px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #fff;
+            padding: 10px;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            resize: vertical;
         }
     </style>
 </head>
 <body>
 
-    <!-- CARD DE LOGIN (EXIBIDO QUANDO NÃO AUTENTICADO) -->
+    <!-- CARD DE LOGIN -->
     <div class="login-card" id="loginCard">
         <h2>Acesso Restrito</h2>
-        <p>Faça login com sua conta de Atendente para acessar o Guichê do Colégio La Salle</p>
+        <p>Faça login para acessar o Guichê do Colégio La Salle</p>
 
         <form onsubmit="realizarLogin(event)">
             <div class="form-group">
@@ -221,21 +215,27 @@
             </div>
             <button type="submit" class="btn-login">Entrar no Sistema</button>
         </form>
-        <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Dica: <b>atendente1</b> ou <b>store1</b> (Senha: <b>senha123</b>)</p>
     </div>
 
-    <!-- DASHBOARD DE ATENDIMENTO (AUTENTICADO) -->
+    <!-- DASHBOARD DE ATENDIMENTO -->
     <div class="dashboard" id="dashboard">
         <a href="index.html" class="back-link">← Voltar ao Início</a>
 
         <div class="top-bar">
             <div class="user-info">
-                <span>🔐 Conectado como: <strong id="lblNomeUser">Atendente</strong></span>
+                <span>🔐 Atendente: <strong id="lblNomeUser">--</strong></span>
             </div>
 
-            <div class="guiche-selector">
+            <div class="guiche-controls">
+                <label for="setorSelect">Setor:</label>
+                <select id="setorSelect" onchange="salvarSetorAtuacao()">
+                    <option value="RECEPCAO">Recepção Geral</option>
+                    <option value="STORE">La Salle Store</option>
+                    <option value="TODOS">Geral (Todos)</option>
+                </select>
+
                 <label for="guicheInput">Guichê:</label>
-                <input type="text" id="guicheInput" value="Recepção 01">
+                <input type="text" id="guicheInput" value="Guichê 01">
                 <button class="btn-logout" onclick="realizarLogout()">Sair</button>
             </div>
         </div>
@@ -246,16 +246,20 @@
                 <div class="value" id="mTotal">0</div>
             </div>
             <div class="metric-card">
-                <h3>Prioritário</h3>
-                <div class="value" style="color: #f59e0b;" id="mPref">0</div>
+                <h3>Rec. Prioritário</h3>
+                <div class="value" style="color: #f59e0b;" id="mRecPref">0</div>
             </div>
             <div class="metric-card">
                 <h3>Recepção Geral</h3>
-                <div class="value" style="color: #38bdf8;" id="mRec">0</div>
+                <div class="value" style="color: #38bdf8;" id="mRecNorm">0</div>
             </div>
             <div class="metric-card">
-                <h3>La Salle Store</h3>
-                <div class="value" style="color: #ec4899;" id="mStore">0</div>
+                <h3>Store Prioritário</h3>
+                <div class="value" style="color: #a855f7;" id="mStoPref">0</div>
+            </div>
+            <div class="metric-card">
+                <h3>Store Normal</h3>
+                <div class="value" style="color: #ec4899;" id="mStoNorm">0</div>
             </div>
         </div>
 
@@ -267,7 +271,20 @@
             <div class="action-buttons">
                 <button class="btn btn-call" onclick="chamarProxima()">🔔 Chamar Próxima Senha</button>
                 <button class="btn btn-recall" id="btnRecall" onclick="rechamar()" disabled>🔁 Rechamar</button>
-                <button class="btn btn-finish" id="btnFinish" onclick="concluir()" disabled>✅ Concluir Atendimento</button>
+                <button class="btn btn-finish" id="btnFinish" onclick="abrirModalConcluir()" disabled>✅ Concluir Atendimento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONCLUIR COM OBSERVAÇÃO -->
+    <div class="modal" id="modalConcluir">
+        <div class="modal-content">
+            <h3 style="color: #38bdf8; margin-bottom: 10px;">Concluir Atendimento</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Adicione uma observação sobre o que foi realizado (opcional):</p>
+            <textarea id="txtObservacao" placeholder="Ex: Matrícula renovada com sucesso / Entregue 2 camisetas do uniforme M"></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-finish" style="flex: 1;" onclick="confirmarConclusao()">Concluir</button>
+                <button class="btn-logout" style="flex: 1;" onclick="fecharModalConcluir()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -282,11 +299,20 @@
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 document.getElementById('lblNomeUser').innerText = nomeUser || 'Atendente';
+                
+                const setorSalvo = sessionStorage.getItem('sga_setor') || 'RECEPCAO';
+                document.getElementById('setorSelect').value = setorSalvo;
+
                 carregarEstatisticas();
             } else {
                 document.getElementById('loginCard').style.display = 'block';
                 document.getElementById('dashboard').style.display = 'none';
             }
+        }
+
+        function salvarSetorAtuacao() {
+            const setor = document.getElementById('setorSelect').value;
+            sessionStorage.setItem('sga_setor', setor);
         }
 
         async function realizarLogin(e) {
@@ -313,6 +339,11 @@
                 sessionStorage.setItem('sga_token', tokenJWT);
                 sessionStorage.setItem('sga_nome', nomeUser);
 
+                // Define setor padrão pelo nome de usuário se for store1
+                if (username.toLowerCase().includes('store')) {
+                    sessionStorage.setItem('sga_setor', 'STORE');
+                }
+
                 verificarAutenticacao();
             } catch (err) {
                 alert('Erro ao realizar login: ' + err.message);
@@ -333,9 +364,10 @@
                 const data = await res.json();
 
                 document.getElementById('mTotal').innerText = data.totalAguardando;
-                document.getElementById('mPref').innerText = data.preferencialAguardando;
-                document.getElementById('mRec').innerText = data.recepcaAguardando;
-                document.getElementById('mStore').innerText = data.storeAguardando;
+                document.getElementById('mRecPref').innerText = data.recepcaoPreferencial;
+                document.getElementById('mRecNorm').innerText = data.recepcaoNormal;
+                document.getElementById('mStoPref').innerText = data.storePreferencial;
+                document.getElementById('mStoNorm').innerText = data.storeNormal;
             } catch (err) {
                 console.error(err);
             }
@@ -343,6 +375,8 @@
 
         async function chamarProxima() {
             const guiche = document.getElementById('guicheInput').value;
+            const setor = document.getElementById('setorSelect').value;
+
             try {
                 const res = await fetch('/api/atendimento/chamar', {
                     method: 'POST',
@@ -350,7 +384,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${tokenJWT}`
                     },
-                    body: JSON.stringify({ guiche: guiche, tipoFila: null })
+                    body: JSON.stringify({ guiche: guiche, setor: setor, tipoFila: null })
                 });
 
                 if (res.status === 401) {
@@ -360,7 +394,7 @@
                 }
 
                 if (res.status === 204) {
-                    alert('Não há senhas aguardando na fila!');
+                    alert('Não há senhas aguardando no setor selecionado!');
                     return;
                 }
 
@@ -391,14 +425,31 @@
             }
         }
 
-        async function concluir() {
+        function abrirModalConcluir() {
+            document.getElementById('txtObservacao').value = '';
+            document.getElementById('modalConcluir').style.display = 'flex';
+        }
+
+        function fecharModalConcluir() {
+            document.getElementById('modalConcluir').style.display = 'none';
+        }
+
+        async function confirmarConclusao() {
             if (!senhaAtualObj) return;
+            const obs = document.getElementById('txtObservacao').value;
+
             try {
                 const res = await fetch(`/api/atendimento/${senhaAtualObj.id}/concluir`, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${tokenJWT}` }
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${tokenJWT}`
+                    },
+                    body: JSON.stringify({ observacao: obs })
                 });
+
                 if (res.ok) {
+                    fecharModalConcluir();
                     senhaAtualObj = null;
                     atualizarInterfaceAtual();
                     carregarEstatisticas();

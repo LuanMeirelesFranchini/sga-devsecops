@@ -12,7 +12,7 @@ public class Senha {
     private Long id;
 
     @Column(nullable = false, length = 15)
-    private String codigo; // Ex: PRE-001, NOR-005
+    private String codigo; // Ex: REC-P-001, STO-001
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -26,7 +26,10 @@ public class Senha {
     private StatusSenha status;
 
     @Column(name = "guiche")
-    private String guiche; // Ex: "Guichê 01", "Guichê 02"
+    private String guiche; // Ex: "Recepção 01", "Store 02"
+
+    @Column(name = "observacao", length = 1000)
+    private String observacao; // Comentário opcional do recepcionista sobre o atendimento
 
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
@@ -95,6 +98,14 @@ public class Senha {
 
     public void setGuiche(String guiche) {
         this.guiche = guiche;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     public LocalDateTime getDataCriacao() {

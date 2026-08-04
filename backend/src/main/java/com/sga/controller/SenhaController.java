@@ -1,6 +1,7 @@
 package com.sga.controller;
 
 import com.sga.dto.ChamarSenhaDTO;
+import com.sga.dto.ConcluirAtendimentoDTO;
 import com.sga.dto.EstatisticaFilaDTO;
 import com.sga.dto.GerarSenhaDTO;
 import com.sga.model.Senha;
@@ -31,10 +32,10 @@ public class SenhaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(novaSenha);
     }
 
-    // Guichê - Chamar Próxima Senha
+    // Guichê - Chamar Próxima Senha (Filtrado por Setor do Atendente)
     @PostMapping("/atendimento/chamar")
     public ResponseEntity<?> chamarProxima(@Valid @RequestBody ChamarSenhaDTO dto) {
-        Optional<Senha> senhaOpt = senhaService.chamarProximaSenha(dto.guiche(), dto.tipoFila());
+        Optional<Senha> senhaOpt = senhaService.chamarProximaSenha(dto.guiche(), dto.setor(), dto.tipoFila());
         if (senhaOpt.isPresent()) {
             return ResponseEntity.ok(senhaOpt.get());
         }
@@ -45,14 +46,25 @@ public class SenhaController {
     @PostMapping("/atendimento/{id}/rechamar")
     public ResponseEntity<Senha> rechamarSenha(@PathVariable Long id) {
         Optional<Senha> senhaOpt = senhaService.rechamarSenha(id);
-        return senhaOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        if (senhaOpt.isPresent()) {
+            return ResponseEntity.ok(senhaOpt.get());
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    // Guichê - Concluir Atendimento
+    // Guichê - Concluir Atendimento com Comentário Opcional
     @PostMapping("/atendimento/{id}/concluir")
-    public ResponseEntity<Senha> concluirAtendimento(@PathVariable Long id) {
-        Optional<Senha> senhaOpt = senhaService.concluirAtendimento(id);
-        return senhaOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Senha> concluirAtendimento(
+            @PathVariable Long id,
+            @RequestBody(required = false) ConcluirAtendimentoDTO dto) {
+
+        String observacao = (dto != null) ? dto.observacao() : null;
+        Optional<Senha> senhaOpt = senhaService.concluirAtendimento(id, observacao);
+
+        if (senhaOpt.isPresent()) {
+            return ResponseEntity.ok(senhaOpt.get());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     // Painel TV - Obter chamadas recentes

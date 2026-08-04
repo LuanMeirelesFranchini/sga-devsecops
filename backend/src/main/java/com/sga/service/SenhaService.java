@@ -2,6 +2,7 @@ package com.sga.service;
 
 import com.sga.dto.EstatisticaFilaDTO;
 import com.sga.model.Senha;
+import com.sga.model.SetorAtendimento;
 import com.sga.model.StatusSenha;
 import com.sga.model.TipoAtendimento;
 import com.sga.repository.SenhaRepository;
@@ -35,13 +36,18 @@ public class SenhaService {
     }
 
     @Transactional
-    public Optional<Senha> chamarProximaSenha(String guiche, TipoAtendimento tipoFila) {
+    public Optional<Senha> chamarProximaSenha(String guiche, SetorAtendimento setor, TipoAtendimento tipoFila) {
         List<Senha> aguardando;
+
         if (tipoFila != null) {
             aguardando = senhaRepository.findByStatusOrderByDataCriacaoAsc(StatusSenha.AGUARDANDO)
                     .stream().filter(s -> s.getTipo() == tipoFila).toList();
+        } else if (setor == SetorAtendimento.STORE) {
+            aguardando = senhaRepository.findProximaSenhaStore(StatusSenha.AGUARDANDO);
+        } else if (setor == SetorAtendimento.RECEPCAO) {
+            aguardando = senhaRepository.findProximaSenhaRecepcao(StatusSenha.AGUARDANDO);
         } else {
-            aguardando = senhaRepository.findProximaSenhaFilaPrioritaria(StatusSenha.AGUARDANDO, TipoAtendimento.RECEPCAO_PREFERENCIAL);
+            aguardando = senhaRepository.findProximaSenhaGeral(StatusSenha.AGUARDANDO);
         }
 
         if (aguardando.isEmpty()) {
@@ -65,9 +71,10 @@ public class SenhaService {
     }
 
     @Transactional
-    public Optional<Senha> concluirAtendimento(Long idSenha) {
+    public Optional<Senha> concluirAtendimento(Long idSenha, String observacao) {
         return senhaRepository.findById(idSenha).map(senha -> {
             senha.setStatus(StatusSenha.ATENDIDO);
+            senha.setObservacao(observacao);
             senha.setDataAtendimento(LocalDateTime.now());
             return senhaRepository.save(senha);
         });
@@ -79,10 +86,11 @@ public class SenhaService {
 
     public EstatisticaFilaDTO obterEstatisticasFila() {
         long total = senhaRepository.countByStatus(StatusSenha.AGUARDANDO);
-        long pref = senhaRepository.countByTipoAndStatus(TipoAtendimento.RECEPCAO_PREFERENCIAL, StatusSenha.AGUARDANDO);
-        long rec = senhaRepository.countByTipoAndStatus(TipoAtendimento.RECEPCAO_NORMAL, StatusSenha.AGUARDANDO);
-        long store = senhaRepository.countByTipoAndStatus(TipoAtendimento.STORE_UNIFORMES, StatusSenha.AGUARDANDO);
+        long recPref = senhaRepository.countByTipoAndStatus(TipoAtendimento.RECEPCAO_PREFERENCIAL, StatusSenha.AGUARDANDO);
+        long recNorm = senhaRepository.countByTipoAndStatus(TipoAtendimento.RECEPCAO_NORMAL, StatusSenha.AGUARDANDO);
+        long stoPref = senhaRepository.countByTipoAndStatus(TipoAtendimento.STORE_PREFERENCIAL, StatusSenha.AGUARDANDO);
+        long stoNorm = senhaRepository.countByTipoAndStatus(TipoAtendimento.STORE_NORMAL, StatusSenha.AGUARDANDO);
 
-        return new EstatisticaFilaDTO(total, pref, rec, store);
+        return new EstatisticaFilaDTO(total, recPref, recNorm, stoPref, stoNorm);
     }
 }

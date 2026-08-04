@@ -25,13 +25,13 @@
         }
 
         .container {
-            max-width: 850px;
+            max-width: 900px;
             width: 100%;
             text-align: center;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.6rem;
             margin-bottom: 5px;
             color: #38bdf8;
         }
@@ -44,7 +44,7 @@
 
         .buttons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
         }
 
@@ -52,16 +52,16 @@
             background: rgba(30, 41, 59, 0.8);
             border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            padding: 35px 20px;
+            padding: 30px 15px;
             color: #fff;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
@@ -71,25 +71,17 @@
             background: rgba(56, 189, 248, 0.15);
         }
 
-        .btn-tipo.pref {
-            border-color: #f59e0b;
-        }
-        .btn-tipo.pref:hover {
-            background: rgba(245, 158, 11, 0.2);
-        }
+        .btn-tipo.rec-p { border-color: #f59e0b; }
+        .btn-tipo.rec-p:hover { background: rgba(245, 158, 11, 0.2); }
 
-        .btn-tipo.store {
-            border-color: #ec4899;
-        }
-        .btn-tipo.store:hover {
-            background: rgba(236, 72, 153, 0.2);
-        }
+        .btn-tipo.sto { border-color: #ec4899; }
+        .btn-tipo.sto:hover { background: rgba(236, 72, 153, 0.2); }
 
-        .icon {
-            font-size: 3.2rem;
-        }
+        .btn-tipo.sto-p { border-color: #a855f7; }
+        .btn-tipo.sto-p:hover { background: rgba(168, 85, 247, 0.2); }
 
-        /* Modal Imprimir Senha */
+        .icon { font-size: 3rem; }
+
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -138,7 +130,7 @@
 
     <div class="container">
         <h1>Colégio La Salle</h1>
-        <p class="subtitle">Selecione o serviço desejado para retirar sua senha de atendimento</p>
+        <p class="subtitle">Selecione o serviço e a prioridade para retirar sua senha</p>
 
         <div class="buttons-grid">
             <button class="btn-tipo" onclick="gerarSenha('RECEPCAO_NORMAL')">
@@ -147,16 +139,22 @@
                 <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Secretaria, Matrículas, Financeiro</small>
             </button>
 
-            <button class="btn-tipo store" onclick="gerarSenha('STORE_UNIFORMES')">
-                <span class="icon">👕</span>
-                <span>La Salle Store</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Uniformes & Artigos Escolares</small>
+            <button class="btn-tipo rec-p" onclick="gerarSenha('RECEPCAO_PREFERENCIAL')">
+                <span class="icon">⭐</span>
+                <span>Recepção Prioritário</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Idosos, Gestantes, PCD, Bebês</small>
             </button>
 
-            <button class="btn-tipo pref" onclick="gerarSenha('RECEPCAO_PREFERENCIAL')">
-                <span class="icon">⭐</span>
-                <span>Atendimento Prioritário</span>
-                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Idosos, Gestantes, PCD, Bebês</small>
+            <button class="btn-tipo sto" onclick="gerarSenha('STORE_NORMAL')">
+                <span class="icon">👕</span>
+                <span>La Salle Store</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Uniformes & Materiais</small>
+            </button>
+
+            <button class="btn-tipo sto-p" onclick="gerarSenha('STORE_PREFERENCIAL')">
+                <span class="icon">🌟</span>
+                <span>Store Prioritário</span>
+                <small style="font-size: 0.8rem; font-weight: 300; opacity: 0.8">Prioritário La Salle Store</small>
             </button>
         </div>
     </div>
@@ -167,8 +165,8 @@
             <h2>COLÉGIO LA SALLE</h2>
             <div class="code" id="ticketCodigo">REC-001</div>
             <div class="type-name" id="ticketTipo">RECEPÇÃO GERAL</div>
-            <div class="date" id="ticketData">03/08/2026 17:25</div>
-            <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Aguarde a chamada no painel principal da recepção.</p>
+            <div class="date" id="ticketData">04/08/2026 17:25</div>
+            <p style="margin-top: 15px; font-size: 0.8rem; color: #64748b;">Por favor, aguarde a chamada no painel principal.</p>
         </div>
     </div>
 
