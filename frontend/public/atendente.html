@@ -553,6 +553,9 @@
                     atualizarInterfaceAtual();
                     carregarEstatisticas();
                     carregarListas();
+                } else {
+                    const errorMsg = await res.text();
+                    throw new Error(errorMsg || "Erro ao pausar a senha.");
                 }
             } catch (err) {
                 alert(err.message);
