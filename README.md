@@ -29,12 +29,20 @@ Existem duas formas fáceis de rodar na sua VM:
 
 ## 🌐 Como Acessar as Interfaces
 
-Após o deploy, acesse o IP da sua VM Ubuntu no navegador:
+Substitua `SEU_IP_UBUNTU` pelo IP real da sua máquina (ex: `192.168.0.171` ou `localhost`).
 
-- 🏠 **Página Inicial:** `http://192.168.0.171/`
-- 🎟️ **Totem de Emitir Senha (Kiosk):** `http://192.168.0.171/kiosk.html`
-- 📺 **Painel Chamador de TV:** `http://192.168.0.171/painel.html`
-- 🎧 **Painel do Atendente / Guichê:** `http://192.168.0.171/atendente.html`
+### 📱 Sistema Principal (Porta 80)
+- 🏠 **Página Inicial:** `http://SEU_IP_UBUNTU/`
+- 🎟️ **Totem de Emitir Senha (Kiosk):** `http://SEU_IP_UBUNTU/kiosk.html`
+- 📺 **Painel Chamador de TV:** `http://SEU_IP_UBUNTU/painel.html`
+- 🎧 **Painel do Atendente:** `http://SEU_IP_UBUNTU/atendente.html`
+- 📈 **Relatórios:** `http://SEU_IP_UBUNTU/relatorios.html`
+- ⚙️ **Administração:** `http://SEU_IP_UBUNTU/admin.html`
+
+### 📊 Observabilidade e Segurança
+- 📉 **Grafana (Dashboards Visuais):** `http://SEU_IP_UBUNTU:3000` (Usuário/Senha: `admin`)
+- 🤖 **Prometheus (Métricas Brutas):** `http://SEU_IP_UBUNTU:9090`
+- 🗄️ **PostgreSQL (Acesso Direto ao Banco):** Porta `5432`
 
 ---
 
