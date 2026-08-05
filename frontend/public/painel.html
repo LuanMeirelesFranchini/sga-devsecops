@@ -162,9 +162,13 @@
 
     <script>
         let ultimaSenhaId = null;
+        let isPrimeiroLoad = true;
 
         setInterval(() => {
-            document.getElementById('relogio').innerText = new Date().toLocaleTimeString('pt-BR');
+            const agora = new Date();
+            const dataStr = agora.toLocaleDateString('pt-BR');
+            const horaStr = agora.toLocaleTimeString('pt-BR');
+            document.getElementById('relogio').innerText = `${dataStr}  |  ${horaStr}`;
         }, 1000);
 
         function anunciarSenha(codigo, guiche) {
@@ -202,8 +206,12 @@
 
                     if (ultimaSenhaId !== atual.id + '_' + atual.dataChamada) {
                         ultimaSenhaId = atual.id + '_' + atual.dataChamada;
-                        anunciarSenha(atual.codigo, atual.guiche);
+                        if (!isPrimeiroLoad) {
+                            anunciarSenha(atual.codigo, atual.guiche);
+                        }
                     }
+                    
+                    isPrimeiroLoad = false;
 
                     const historyList = document.getElementById('historyList');
                     historyList.innerHTML = '';
