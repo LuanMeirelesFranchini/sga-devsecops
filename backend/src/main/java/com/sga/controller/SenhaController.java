@@ -5,6 +5,8 @@ import com.sga.dto.ConcluirAtendimentoDTO;
 import com.sga.dto.EstatisticaFilaDTO;
 import com.sga.dto.GerarSenhaDTO;
 import com.sga.model.Senha;
+import com.sga.model.SetorAtendimento;
+import com.sga.model.StatusSenha;
 import com.sga.service.SenhaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -39,7 +41,25 @@ public class SenhaController {
         if (senhaOpt.isPresent()) {
             return ResponseEntity.ok(senhaOpt.get());
         }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    // Guichê - Obter Senha Atual do Guichê
+    @GetMapping("/atendimento/atual")
+    public ResponseEntity<Senha> obterSenhaAtual(@RequestParam String guiche) {
+        Optional<Senha> senhaOpt = senhaService.obterSenhaAtual(guiche);
+        if (senhaOpt.isPresent()) {
+            return ResponseEntity.ok(senhaOpt.get());
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // Guichê - Listar Filas (Aguardando / Pausados)
+    @GetMapping("/atendimento/fila")
+    public ResponseEntity<List<Senha>> listarFila(@RequestParam SetorAtendimento setor, @RequestParam StatusSenha status) {
+        return ResponseEntity.ok(senhaService.listarFila(setor, status));
     }
 
     // Guichê - Rechamar Senha
@@ -61,6 +81,26 @@ public class SenhaController {
         String observacao = (dto != null) ? dto.observacao() : null;
         Optional<Senha> senhaOpt = senhaService.concluirAtendimento(id, observacao);
 
+        if (senhaOpt.isPresent()) {
+            return ResponseEntity.ok(senhaOpt.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Guichê - Pausar Atendimento
+    @PostMapping("/atendimento/{id}/pausar")
+    public ResponseEntity<Senha> pausarSenha(@PathVariable Long id) {
+        Optional<Senha> senhaOpt = senhaService.pausarSenha(id);
+        if (senhaOpt.isPresent()) {
+            return ResponseEntity.ok(senhaOpt.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Guichê - Retomar Atendimento Pausado
+    @PostMapping("/atendimento/{id}/retomar")
+    public ResponseEntity<Senha> retomarSenha(@PathVariable Long id) {
+        Optional<Senha> senhaOpt = senhaService.retomarSenha(id);
         if (senhaOpt.isPresent()) {
             return ResponseEntity.ok(senhaOpt.get());
         }

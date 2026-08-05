@@ -159,8 +159,42 @@
 
         .btn-call { background: #38bdf8; color: #0f172a; font-size: 1.2rem; }
         .btn-recall { background: #f59e0b; color: #0f172a; }
+        .btn-pause { background: #8b5cf6; color: #fff; }
         .btn-finish { background: #10b981; color: #fff; }
         .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .lists-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .list-section {
+            flex: 1;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .list-section h2 { font-size: 1.1rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        
+        .list-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .list-item.paused { border-left-color: #8b5cf6; }
+        .list-item strong { font-size: 1.1rem; color: #fff; }
+        .list-item span { font-size: 0.85rem; color: #94a3b8; }
+        .btn-resume { background: #8b5cf6; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-resume:hover { opacity: 0.8; }
 
         .back-link { display: inline-block; color: #94a3b8; text-decoration: none; margin-bottom: 20px; }
 
@@ -270,9 +304,25 @@
             <div id="currentType" style="color: #94a3b8; font-weight: 600;">Nenhuma senha chamada no momento</div>
 
             <div class="action-buttons">
-                <button class="btn btn-call" onclick="chamarProxima()">🔔 Chamar Próxima Senha</button>
+                <button class="btn btn-call" id="btnCall" onclick="chamarProxima()">🔔 Chamar Próxima Senha</button>
                 <button class="btn btn-recall" id="btnRecall" onclick="rechamar()" disabled>🔁 Rechamar</button>
+                <button class="btn btn-pause" id="btnPause" onclick="pausarSenha()" disabled>⏸️ Pausar</button>
                 <button class="btn btn-finish" id="btnFinish" onclick="abrirModalConcluir()" disabled>✅ Concluir Atendimento</button>
+            </div>
+        </div>
+
+        <div class="lists-container">
+            <div class="list-section">
+                <h2>Próximos a Serem Chamados</h2>
+                <div id="listaAguardando">
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Nenhuma senha na fila.</p>
+                </div>
+            </div>
+            <div class="list-section">
+                <h2>Senhas em Pausa</h2>
+                <div id="listaPausados">
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Nenhuma senha pausada.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -304,7 +354,12 @@
                 const setorSalvo = sessionStorage.getItem('sga_setor') || 'RECEPCAO';
                 document.getElementById('setorSelect').value = setorSalvo;
 
+                const guicheSalvo = sessionStorage.getItem('sga_guiche') || 'Guichê 01';
+                document.getElementById('guicheInput').value = guicheSalvo;
+
+                recuperarSenhaAtual();
                 carregarEstatisticas();
+                carregarListas();
             } else {
                 document.getElementById('loginCard').style.display = 'block';
                 document.getElementById('dashboard').style.display = 'none';
@@ -314,7 +369,16 @@
         function salvarSetorAtuacao() {
             const setor = document.getElementById('setorSelect').value;
             sessionStorage.setItem('sga_setor', setor);
+            carregarEstatisticas();
+            carregarListas();
         }
+
+        function salvarGuiche() {
+            const guiche = document.getElementById('guicheInput').value;
+            sessionStorage.setItem('sga_guiche', guiche);
+        }
+
+        document.getElementById('guicheInput').addEventListener('input', salvarGuiche);
 
         async function realizarLogin(e) {
             e.preventDefault();
@@ -376,6 +440,11 @@
         }
 
         async function chamarProxima() {
+            if (senhaAtualObj) {
+                alert("Você já possui um atendimento em andamento! Conclua ou Pause a senha atual antes de chamar a próxima.");
+                return;
+            }
+
             const guiche = document.getElementById('guicheInput').value;
             const setor = document.getElementById('setorSelect').value;
 
@@ -395,6 +464,13 @@
                     return;
                 }
 
+                if (res.status === 409) {
+                    const msg = await res.text();
+                    alert(msg);
+                    recuperarSenhaAtual();
+                    return;
+                }
+
                 if (res.status === 204) {
                     alert('Não há senhas aguardando no setor selecionado!');
                     return;
@@ -407,6 +483,7 @@
                 senhaAtualObj = await res.json();
                 atualizarInterfaceAtual();
                 carregarEstatisticas();
+                carregarListas();
             } catch (err) {
                 alert(err.message);
             }
@@ -455,22 +532,139 @@
                     senhaAtualObj = null;
                     atualizarInterfaceAtual();
                     carregarEstatisticas();
+                    carregarListas();
                 }
             } catch (err) {
                 alert(err.message);
             }
         }
 
+        async function pausarSenha() {
+            if (!senhaAtualObj) return;
+            try {
+                const res = await fetch(`/api/atendimento/${senhaAtualObj.id}/pausar`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${tokenJWT}` }
+                });
+
+                if (res.ok) {
+                    alert(`Senha ${senhaAtualObj.codigo} colocada em pausa.`);
+                    senhaAtualObj = null;
+                    atualizarInterfaceAtual();
+                    carregarEstatisticas();
+                    carregarListas();
+                }
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        async function retomarSenha(id) {
+            if (senhaAtualObj) {
+                alert("Você já possui um atendimento em andamento! Conclua ou Pause a senha atual antes de retomar outra.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/atendimento/${id}/retomar`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${tokenJWT}` }
+                });
+
+                if (res.ok) {
+                    senhaAtualObj = await res.json();
+                    atualizarInterfaceAtual();
+                    carregarEstatisticas();
+                    carregarListas();
+                }
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        async function recuperarSenhaAtual() {
+            const guiche = document.getElementById('guicheInput').value;
+            try {
+                const res = await fetch(`/api/atendimento/atual?guiche=${encodeURIComponent(guiche)}`, {
+                    headers: { 'Authorization': `Bearer ${tokenJWT}` }
+                });
+                
+                if (res.status === 200) {
+                    senhaAtualObj = await res.json();
+                } else {
+                    senhaAtualObj = null;
+                }
+                atualizarInterfaceAtual();
+            } catch (err) {
+                console.error("Erro ao recuperar senha atual do guiche", err);
+            }
+        }
+
+        async function carregarListas() {
+            const setor = document.getElementById('setorSelect').value;
+            
+            try {
+                const [resAguardando, resPausados] = await Promise.all([
+                    fetch(`/api/atendimento/fila?setor=${setor}&status=AGUARDANDO`, { headers: { 'Authorization': `Bearer ${tokenJWT}` } }),
+                    fetch(`/api/atendimento/fila?setor=${setor}&status=PAUSADO`, { headers: { 'Authorization': `Bearer ${tokenJWT}` } })
+                ]);
+
+                if (resAguardando.ok) {
+                    const aguardando = await resAguardando.json();
+                    renderLista('listaAguardando', aguardando, false);
+                }
+                
+                if (resPausados.ok) {
+                    const pausados = await resPausados.json();
+                    renderLista('listaPausados', pausados, true);
+                }
+            } catch (err) {
+                console.error("Erro ao carregar listas", err);
+            }
+        }
+
+        function renderLista(containerId, lista, isPaused) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (lista.length === 0) {
+                container.innerHTML = `<p style="color: #94a3b8; font-size: 0.9rem;">Nenhuma senha ${isPaused ? 'pausada' : 'na fila'}.</p>`;
+                return;
+            }
+
+            lista.forEach(senha => {
+                const item = document.createElement('div');
+                item.className = `list-item ${isPaused ? 'paused' : ''}`;
+                
+                let timeStr = new Date(senha.dataCriacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                item.innerHTML = `
+                    <div>
+                        <strong>${senha.codigo}</strong><br>
+                        <span>${senha.tipo.replace('_', ' ')} - ${timeStr}</span>
+                    </div>
+                    ${isPaused ? `<button class="btn-resume" onclick="retomarSenha(${senha.id})">▶ Retomar</button>` : ''}
+                `;
+                container.appendChild(item);
+            });
+        }
+
         function atualizarInterfaceAtual() {
             if (senhaAtualObj) {
                 document.getElementById('currentCode').innerText = senhaAtualObj.codigo;
                 document.getElementById('currentType').innerText = `TIPO: ${senhaAtualObj.tipo.replace('_', ' ')}`;
+                document.getElementById('btnCall').disabled = true;
+                document.getElementById('btnCall').style.opacity = '0.4';
                 document.getElementById('btnRecall').disabled = false;
+                document.getElementById('btnPause').disabled = false;
                 document.getElementById('btnFinish').disabled = false;
             } else {
                 document.getElementById('currentCode').innerText = '---';
                 document.getElementById('currentType').innerText = 'Nenhuma senha chamada no momento';
+                document.getElementById('btnCall').disabled = false;
+                document.getElementById('btnCall').style.opacity = '1';
                 document.getElementById('btnRecall').disabled = true;
+                document.getElementById('btnPause').disabled = true;
                 document.getElementById('btnFinish').disabled = true;
             }
         }
@@ -526,6 +720,8 @@
                     if (Notification.permission === 'granted' && document.hidden) {
                         new Notification("Nova Senha!", { body: `Senha ${senha.codigo} aguardando.` });
                     }
+                    
+                    carregarListas();
                 }
             });
         }
@@ -537,7 +733,12 @@
         verificarAutenticacao();
         if (tokenJWT) iniciarConexaoSSE();
         // Fallback de polling a cada 15s para garantir que não perdeu evento de desconexão longa
-        setInterval(carregarEstatisticas, 15000);
+        setInterval(() => {
+            if (tokenJWT) {
+                carregarEstatisticas();
+                carregarListas();
+            }
+        }, 15000);
     </script>
 </body>
 </html>

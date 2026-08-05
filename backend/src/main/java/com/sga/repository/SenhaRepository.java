@@ -20,6 +20,8 @@ public interface SenhaRepository extends JpaRepository<Senha, Long> {
 
     List<Senha> findByStatusOrderByDataCriacaoAsc(StatusSenha status);
 
+    Optional<Senha> findFirstByGuicheAndStatus(String guiche, StatusSenha status);
+
     @Query("SELECT s FROM Senha s WHERE s.status = :status AND s.tipo IN (com.sga.model.TipoAtendimento.DIRECAO_AGENDADO, com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL, com.sga.model.TipoAtendimento.RECEPCAO_NORMAL) ORDER BY CASE WHEN s.tipo = com.sga.model.TipoAtendimento.DIRECAO_AGENDADO THEN 1 WHEN s.tipo = com.sga.model.TipoAtendimento.RECEPCAO_PREFERENCIAL THEN 2 ELSE 3 END, s.dataCriacao ASC")
     List<Senha> findProximaSenhaRecepcao(@Param("status") StatusSenha status);
 

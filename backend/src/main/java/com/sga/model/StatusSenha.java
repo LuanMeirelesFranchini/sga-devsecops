@@ -4,5 +4,6 @@ public enum StatusSenha {
     AGUARDANDO,
     CHAMADO,
     ATENDIDO,
-    CANCELADO
+    CANCELADO,
+    PAUSADO
 }

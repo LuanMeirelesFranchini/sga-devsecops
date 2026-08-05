@@ -44,6 +44,12 @@ public class SenhaService {
 
     @Transactional
     public Optional<Senha> chamarProximaSenha(String guiche, SetorAtendimento setor, TipoAtendimento tipoFila) {
+        // Bloqueio de chamada dupla: verifica se o guichê já tem uma senha CHAMADA
+        Optional<Senha> ocupado = senhaRepository.findFirstByGuicheAndStatus(guiche, StatusSenha.CHAMADO);
+        if (ocupado.isPresent()) {
+            throw new IllegalStateException("O guichê já possui um atendimento em andamento. Conclua ou pause a senha atual.");
+        }
+
         List<Senha> aguardando;
 
         if (tipoFila != null) {
@@ -88,6 +94,42 @@ public class SenhaService {
             senha.setDataAtendimento(LocalDateTime.now());
             return senhaRepository.save(senha);
         });
+    }
+
+    @Transactional
+    public Optional<Senha> pausarSenha(Long idSenha) {
+        return senhaRepository.findById(idSenha).map(senha -> {
+            senha.setStatus(StatusSenha.PAUSADO);
+            return senhaRepository.save(senha);
+        });
+    }
+
+    @Transactional
+    public Optional<Senha> retomarSenha(Long idSenha) {
+        return senhaRepository.findById(idSenha).map(senha -> {
+            senha.setStatus(StatusSenha.CHAMADO);
+            senha.setDataChamada(LocalDateTime.now());
+            Senha salva = senhaRepository.save(senha);
+            sseService.dispatch("nova_senha", salva); // Re-emite o som de chamada na TV
+            return salva;
+        });
+    }
+
+    public Optional<Senha> obterSenhaAtual(String guiche) {
+        return senhaRepository.findFirstByGuicheAndStatus(guiche, StatusSenha.CHAMADO);
+    }
+
+    public List<Senha> listarFila(SetorAtendimento setor, StatusSenha status) {
+        if (setor == SetorAtendimento.STORE) {
+            return senhaRepository.findProximaSenhaStore(status);
+        } else if (setor == SetorAtendimento.RECEPCAO) {
+            return senhaRepository.findProximaSenhaRecepcao(status);
+        } else if (setor == SetorAtendimento.DIRECAO) {
+            return senhaRepository.findByStatusOrderByDataCriacaoAsc(status)
+                    .stream().filter(s -> s.getTipo() == TipoAtendimento.DIRECAO_AGENDADO).toList();
+        } else {
+            return senhaRepository.findProximaSenhaGeral(status);
+        }
     }
 
     public List<Senha> obterUltimasChamadasPainel() {
