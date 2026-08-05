@@ -37,10 +37,12 @@ public class SenhaController {
     // Guichê - Chamar Próxima Senha (Filtrado por Setor do Atendente)
     @PostMapping("/atendimento/chamar")
     public ResponseEntity<?> chamarProxima(@Valid @RequestBody ChamarSenhaDTO dto) {
-        Optional<Senha> senhaOpt = senhaService.chamarProximaSenha(dto.guiche(), dto.setor(), dto.tipoFila());
-        if (senhaOpt.isPresent()) {
-            return ResponseEntity.ok(senhaOpt.get());
-        }
+        try {
+            Optional<Senha> senhaOpt = senhaService.chamarProximaSenha(dto.guiche(), dto.setor(), dto.tipoFila());
+            if (senhaOpt.isPresent()) {
+                return ResponseEntity.ok(senhaOpt.get());
+            }
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
