@@ -38,7 +38,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/senhas/gerar", "/api/senhas/painel").permitAll()
-                    .requestMatchers("/actuator/health", "/h2-console/**").permitAll()
+                    .requestMatchers("/actuator/health", "/actuator/prometheus", "/h2-console/**").permitAll()
                     
                     // Rotas de Relatórios acessíveis por ADMIN e SUPERVISOR
                     .requestMatchers("/api/relatorios/**").hasAnyRole("ADMIN", "SUPERVISOR")

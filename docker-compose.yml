@@ -43,6 +43,28 @@ services:
       - sga-network
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: sga-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - sga-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: sga-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - sga-network
+    restart: unless-stopped
+
 networks:
   sga-network:
     driver: bridge
