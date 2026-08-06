@@ -171,12 +171,17 @@
     </header>
 
     <div class="main-layout">
-        <!-- PLAYER DE VÍDEO -->
+        <!-- PLAYER DE VÍDEO (YOUTUBE) -->
         <div class="video-panel">
-            <video autoplay loop muted id="videoPlayer">
-                <source src="assets/video.mp4" type="video/mp4">
-                Seu navegador não suporta vídeos HTML5.
-            </video>
+            <iframe 
+                width="100%" 
+                height="100%" 
+                src="https://www.youtube.com/embed/22P2B0fAFLM?autoplay=1&mute=1&loop=1&playlist=22P2B0fAFLM&controls=0&showinfo=0&modestbranding=1" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
         </div>
 
         <div class="call-banner">
