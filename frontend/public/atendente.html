@@ -425,7 +425,9 @@
 
         async function carregarEstatisticas() {
             try {
-                const res = await fetch('/api/senhas/estatisticas');
+                const res = await fetch('/api/senhas/estatisticas', {
+                    headers: { 'Authorization': `Bearer ${tokenJWT}` }
+                });
                 if (!res.ok) return;
                 const data = await res.json();
 
