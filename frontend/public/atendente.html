@@ -626,6 +626,22 @@
             }
         }
 
+        function formatarTempoEspera(dataCriacaoStr) {
+            if (!dataCriacaoStr) return '';
+            const dataCriacao = new Date(dataCriacaoStr);
+            const agora = new Date();
+            const diffMs = agora - dataCriacao;
+            const diffMinutos = Math.floor(diffMs / 60000);
+            
+            if (diffMinutos < 1) return '(agora mesmo)';
+            if (diffMinutos === 1) return '(há 1 min)';
+            if (diffMinutos > 60) {
+                const horas = Math.floor(diffMinutos / 60);
+                return `(há ${horas}h)`;
+            }
+            return `(há ${diffMinutos} min)`;
+        }
+
         function renderLista(containerId, lista, isPaused) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -640,11 +656,12 @@
                 item.className = `list-item ${isPaused ? 'paused' : ''}`;
                 
                 let timeStr = new Date(senha.dataCriacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                let esperaStr = formatarTempoEspera(senha.dataCriacao);
 
                 item.innerHTML = `
                     <div>
-                        <strong>${senha.codigo}</strong><br>
-                        <span>${senha.tipo.replace('_', ' ')} - ${timeStr}</span>
+                        <strong>${senha.codigo} <span style="font-size: 0.85rem; font-weight: normal; color: #f59e0b; margin-left: 5px;">${esperaStr}</span></strong><br>
+                        <span>${senha.tipo.replace('_', ' ')} - Gerada às ${timeStr}</span>
                     </div>
                     ${isPaused ? `<button class="btn-resume" onclick="retomarSenha(${senha.id})">▶ Retomar</button>` : ''}
                 `;

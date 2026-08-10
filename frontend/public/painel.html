@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,7 +51,7 @@
             flex: 1;
             gap: 20px;
             padding: 20px;
-            height: calc(100vh - 80px);
+            overflow: hidden;
         }
 
         .video-panel {
@@ -60,7 +61,7 @@
             border-radius: 24px;
             overflow: hidden;
             border: 3px solid #334155;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -83,13 +84,19 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 30px;
             box-shadow: 0 0 50px rgba(56, 189, 248, 0.25);
             animation: pulseGlow 2s infinite alternate;
         }
 
         @keyframes pulseGlow {
-            from { box-shadow: 0 0 30px rgba(56, 189, 248, 0.2); }
-            to { box-shadow: 0 0 60px rgba(56, 189, 248, 0.5); }
+            from {
+                box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
+            }
+
+            to {
+                box-shadow: 0 0 60px rgba(56, 189, 248, 0.5);
+            }
         }
 
         .call-banner .label {
@@ -100,11 +107,11 @@
         }
 
         .call-banner .code-display {
-            font-size: 6.5rem;
+            font-size: 8.5rem;
             font-weight: 900;
             color: #f8fafc;
             margin: 10px 0;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
         }
 
         .call-banner .guiche-display {
@@ -126,6 +133,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .history-panel h2 {
@@ -154,15 +162,60 @@
             border-left: 5px solid #64748b;
         }
 
-        .history-item.rec-p { border-left-color: #f59e0b; }
-        .history-item.rec { border-left-color: #38bdf8; }
-        .history-item.sto-p { border-left-color: #a855f7; }
-        .history-item.sto { border-left-color: #ec4899; }
+        .history-item.rec-p {
+            border-left-color: #f59e0b;
+        }
 
-        .history-code { font-size: 1.5rem; font-weight: 700; }
-        .history-guiche { font-size: 1.2rem; color: #94a3b8; }
+        .history-item.rec {
+            border-left-color: #38bdf8;
+        }
+
+        .history-item.sto-p {
+            border-left-color: #a855f7;
+        }
+
+        .history-item.sto {
+            border-left-color: #ec4899;
+        }
+
+        .history-code {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .history-guiche {
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+
+        .news-ticker {
+            width: 100%;
+            background: #0f172a;
+            color: #38bdf8;
+            font-size: 1.8rem;
+            font-weight: 600;
+            padding: 12px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+            border-top: 2px solid #1e293b;
+            flex-shrink: 0;
+            letter-spacing: 1px;
+        }
+
+        .ticker-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 25s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -173,13 +226,10 @@
     <div class="main-layout">
         <!-- PLAYER DE VÍDEO (YOUTUBE) -->
         <div class="video-panel">
-            <iframe 
-                width="100%" 
-                height="100%" 
-                src="https://www.youtube.com/embed/22P2B0fAFLM?autoplay=1&mute=1&loop=1&playlist=22P2B0fAFLM&controls=0&showinfo=0&modestbranding=1" 
-                title="YouTube video player" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            <iframe width="100%" height="100%"
+                src="https://www.youtube.com/embed/22P2B0fAFLM?autoplay=1&mute=1&loop=1&playlist=22P2B0fAFLM&controls=0&showinfo=0&modestbranding=1"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen>
             </iframe>
         </div>
@@ -195,6 +245,12 @@
             <ul class="history-list" id="historyList">
                 <li style="color: #64748b; text-align: center; padding: 20px;">Nenhuma senha chamada ainda.</li>
             </ul>
+        </div>
+    </div>
+
+    <div class="news-ticker">
+        <div class="ticker-text">
+            Seja bem-vindo ao Colégio La Salle! Por favor, aguarde a chamada da sua senha para ser atendido.
         </div>
     </div>
 
@@ -248,7 +304,7 @@
                             anunciarSenha(atual.codigo, atual.guiche);
                         }
                     }
-                    
+
                     isPrimeiroLoad = false;
 
                     const historyList = document.getElementById('historyList');
@@ -278,4 +334,5 @@
         atualizarPainel();
     </script>
 </body>
+
 </html>
