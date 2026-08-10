@@ -258,6 +258,7 @@
         <div class="top-bar">
             <div class="user-info">
                 <span>🔐 Atendente: <strong id="lblNomeUser">--</strong></span>
+                <button id="btnEnableSound" onclick="habilitarSom()" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; margin-left: 10px; font-weight: 600; font-size: 0.9rem;">🔔 Ligar Alarme Sonoro</button>
             </div>
 
             <div class="guiche-controls">
@@ -693,6 +694,18 @@
         // NOTIFICAÇÕES EM TEMPO REAL (SSE) & AUDIO
         // ==========================================
         let sseSource = null;
+        let soundEnabled = false;
+
+        function habilitarSom() {
+            soundEnabled = true;
+            playBeep(); // Toca um bipe agora para satisfazer a regra do navegador
+            const btn = document.getElementById('btnEnableSound');
+            btn.innerText = '🔊 Alarme Sonoro Ativado';
+            btn.style.background = '#38bdf8';
+            btn.style.color = '#0f172a';
+            btn.disabled = true;
+            btn.style.cursor = 'default';
+        }
 
         function playBeep() {
             try {
@@ -733,7 +746,7 @@
                 }
 
                 if (pertenceAoSetor) {
-                    playBeep();
+                    if (soundEnabled) playBeep();
                     carregarEstatisticas();
                     
                     // Se a aba não estiver focada, tenta mostrar notificação
