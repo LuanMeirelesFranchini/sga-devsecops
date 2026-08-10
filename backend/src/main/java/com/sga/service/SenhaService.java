@@ -133,7 +133,7 @@ public class SenhaService {
     }
 
     public List<Senha> obterUltimasChamadasPainel() {
-        return senhaRepository.findTop10ByStatusOrderByDataChamadaDesc(StatusSenha.CHAMADO);
+        return senhaRepository.findTop10ByDataChamadaIsNotNullOrderByDataChamadaDesc();
     }
 
     public EstatisticaFilaDTO obterEstatisticasFila() {

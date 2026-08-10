@@ -16,7 +16,7 @@ public interface SenhaRepository extends JpaRepository<Senha, Long> {
     @Query("SELECT MAX(s.numero) FROM Senha s WHERE s.tipo = :tipo AND s.dataCriacao >= :inicioDia")
     Optional<Integer> findMaxNumeroByTipoEData(@Param("tipo") TipoAtendimento tipo, @Param("inicioDia") LocalDateTime inicioDia);
 
-    List<Senha> findTop10ByStatusOrderByDataChamadaDesc(StatusSenha status);
+    List<Senha> findTop10ByDataChamadaIsNotNullOrderByDataChamadaDesc();
 
     List<Senha> findByStatusOrderByDataCriacaoAsc(StatusSenha status);
 
