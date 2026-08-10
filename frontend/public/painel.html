@@ -309,21 +309,26 @@
 
                     const historyList = document.getElementById('historyList');
                     historyList.innerHTML = '';
+                    
+                    const historico = senhas.slice(1);
+                    if (historico.length === 0) {
+                        historyList.innerHTML = '<li style="color: #64748b; text-align: center; padding: 20px;">Nenhuma senha anterior.</li>';
+                    } else {
+                        historico.forEach(item => {
+                            const li = document.createElement('li');
+                            let classeTipo = 'rec';
+                            if (item.tipo === 'RECEPCAO_PREFERENCIAL') classeTipo = 'rec-p';
+                            else if (item.tipo === 'STORE_PREFERENCIAL') classeTipo = 'sto-p';
+                            else if (item.tipo === 'STORE_NORMAL') classeTipo = 'sto';
 
-                    senhas.slice(1).forEach(item => {
-                        const li = document.createElement('li');
-                        let classeTipo = 'rec';
-                        if (item.tipo === 'RECEPCAO_PREFERENCIAL') classeTipo = 'rec-p';
-                        else if (item.tipo === 'STORE_PREFERENCIAL') classeTipo = 'sto-p';
-                        else if (item.tipo === 'STORE_NORMAL') classeTipo = 'sto';
-
-                        li.className = `history-item ${classeTipo}`;
-                        li.innerHTML = `
-                            <span class="history-code">${item.codigo}</span>
-                            <span class="history-guiche">${item.guiche || ''}</span>
-                        `;
-                        historyList.appendChild(li);
-                    });
+                            li.className = `history-item ${classeTipo}`;
+                            li.innerHTML = `
+                                <span class="history-code">${item.codigo}</span>
+                                <span class="history-guiche">${item.guiche || ''}</span>
+                            `;
+                            historyList.appendChild(li);
+                        });
+                    }
                 }
             } catch (err) {
                 console.error('Erro ao consultar painel:', err);
