@@ -38,7 +38,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/senhas/gerar", "/api/senhas/painel").permitAll()
-                    .requestMatchers("/actuator/health", "/actuator/prometheus", "/h2-console/**").permitAll()
+                    .requestMatchers("/actuator/health", "/h2-console/**").permitAll()
                     
                     // Rotas de Relatórios acessíveis por ADMIN e SUPERVISOR
                     .requestMatchers("/api/relatorios/**").hasAnyRole("ADMIN", "SUPERVISOR")
@@ -64,7 +64,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost",
+                "http://localhost:*",
+                "http://127.0.0.1",
+                "http://127.0.0.1:*",
+                "http://192.168.*.*",
+                "http://192.168.*.*:*",
+                "http://10.*.*.*",
+                "http://10.*.*.*:*"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

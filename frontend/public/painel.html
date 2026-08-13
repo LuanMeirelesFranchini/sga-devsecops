@@ -67,10 +67,11 @@
             justify-content: center;
         }
 
-        .video-panel video {
+        .video-panel video, .video-panel iframe {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            pointer-events: none; /* Impede cliques acidentais que desmutam o vídeo */
         }
 
         /* Card Destaque da Senha Atual */

@@ -4,7 +4,7 @@ services:
     container_name: sga-db
     environment:
       POSTGRES_USER: sgauser
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-sgapassword123!}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
       POSTGRES_DB: sgadb
       TZ: America/Sao_Paulo
     volumes:
@@ -12,8 +12,6 @@ services:
     networks:
       - sga-network
     restart: unless-stopped
-    ports:
-      - "5432:5432"
 
   sga-backend:
     build:
@@ -24,10 +22,11 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://sga-db:5432/sgadb
       - SPRING_DATASOURCE_USERNAME=sgauser
-      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-sgapassword123!}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
       - SPRING_DATASOURCE_DRIVER=org.postgresql.Driver
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
       - TZ=America/Sao_Paulo
     networks:
       - sga-network
@@ -50,8 +49,6 @@ services:
     container_name: sga-prometheus
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
     networks:
       - sga-network
     restart: unless-stopped
@@ -60,9 +57,9 @@ services:
     image: grafana/grafana:10.4.2
     container_name: sga-grafana
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
